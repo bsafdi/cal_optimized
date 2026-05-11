@@ -1,0 +1,168 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,physics}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{siunitx}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\title{Hermetic-Sheath Toroidal Pickup: BEM Calculation Log}
+\author{B. R. Safdi (with Claude Code agent)}
+\date{\today}
+
+\newcommand{\Veff}{V_{\mathrm{eff}}}
+\newcommand{\Lp}{L_p}
+\newcommand{\Rt}{R_t}
+\newcommand{\Bmax}{B_{\mathrm{max}}}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{TODO:}~#1}}
+\newcommand{\done}[1]{\textcolor{green!50!black}{\textbf{[done]}~#1}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Running log of the unit-current boundary-element calculation for the
+hermetic Meissner-sheath toroidal axion pickup, following the v2 task
+specification in \texttt{cc\_task\_spec.md}. We extract the dimensionless
+coefficients $F(\beta;\alpha)\equiv\Veff/R^3$ and
+$\ell(\beta;\alpha)\equiv\Lp/(\mu_0 R)$ in the thin-annulus limit, test
+whether the favorable $Q\propto R_t^4$ scaling at fixed magnet cost
+survives parasitic inductance from slit and external return, and compute
+the crossover radius $R_t^\ast$ at which the toroid figure of merit
+equals the long-solenoid Core baseline.
+\end{abstract}
+
+\tableofcontents
+
+\section{Setup and goal}
+\label{sec:setup}
+
+We follow the notation of \emph{Hermetic-Sheath Toroidal Axion Pickup}
+(Safdi 2026, included as \texttt{toroid\_optimization.pdf} in this
+repository). All lengths are in units of the major radius $\Rt$;
+$\mu_0\equiv 1$; unit current $I\equiv 1$.
+
+The magnet bore is
+\begin{equation}
+V_{\mathrm{mag}}=\{1<s<1+\beta,\;0<z<\alpha,\;0<\phi<2\pi\},
+\end{equation}
+with DC field $\vec B_0=\Bmax(R/s)\hat\phi$.
+
+Two scalar coefficients are extracted by polynomial fits in $\beta$ at
+each $\alpha$:
+\begin{equation}
+F(\beta)=f_1\beta+f_2\beta^2+f_3\beta^3,\qquad
+\ell(\beta)=\ell_0+\ell_1\beta+\ell_2\beta^2.
+\end{equation}
+The decision criterion is in Sec.~1 of \texttt{cc\_task\_spec.md}:
+favorable scaling requires both $f_1$ statistically non-zero (3$\sigma$
+bootstrap) and $\ell_0$ consistent with zero
+($\mathrm{RSS}_{\ell_0=0}\le 2\,\mathrm{RSS}_{\mathrm{free}}$).
+
+\section{Geometry and topology}
+\label{sec:geom}
+
+\subsection{Sheath surface}
+Four pieces, joined at edges:
+\begin{itemize}
+\item Inner cylinder $\mathcal S_A$: $s=1$, $z\in[0,\alpha]$.
+\item Top cap $\mathcal S_B$: $z=\alpha$, $s\in[1,1+\beta]$.
+\item Outer cylinder $\mathcal S_C$: $s=1+\beta$, $z\in[0,\alpha]$.
+\item Bottom cap $\mathcal S_D$: $z=0$, $s\in[1,1+\beta]$.
+\end{itemize}
+Without the slit the sheath is topologically a torus $T^2$. Removing the
+finite-width slit ribbon (running once around the meridional rectangle
+$A\!\to\! B\!\to\! C\!\to\! D\!\to\! A$ at azimuthal half-width $w/2$
+around $\phi=0$) makes the sheath an annular cylinder. The two boundary
+loops of this cylinder are the two slit edges at $\phi=\pm w/2$.
+
+\subsection{Stream function and slit jump}
+A surface current with $\nabla_S\cdot\vec K=0$ admits the stream-function
+representation
+\begin{equation}
+\vec K=\hat n\times\nabla_S\psi.
+\end{equation}
+With no normal current at the slit edges (except at the two driving
+terminals), $\psi$ is constant on each boundary loop:
+\begin{equation}
+\psi\big|_{\phi=+w/2}=1,\qquad \psi\big|_{\phi=-w/2}=0.
+\end{equation}
+Any contour on the sheath connecting one boundary to the other crosses
+unit current. \emph{This is how unit current is driven through the BEM;
+the external return wire then closes the circuit.}
+
+\subsection{External return}
+Following the spec, the readout wire exits one port terminal at
+$(s_t,\phi_t,z_t)=(1,+w/2,\alpha/2)$, runs radially out to $s=10$,
+axially down to $z=-2$, radially in to $s=0$, axially up to $z=\alpha/2$,
+radially out to the other terminal at $(1,-w/2,\alpha/2)$. Wire radius
+$r_{\mathrm{wire}}=0.01$ (regularizer for self-energy). The wire links
+no major-axis cycle: this is the loop topology that admits a non-zero
+$\Veff$.
+
+\section{Numerical method}
+\label{sec:method}
+
+Stream-function BEM with piecewise-bilinear $\psi$ on a structured
+$(\phi,t)$ mesh, with $t$ the arc-length around the meridional
+rectangle. Adaptive azimuthal mesh refinement near the slit
+($|\phi|<3w/2$: element size $\le w/3$; $3w/2<|\phi|<6w/2$: $\le w$;
+remainder: $\le 0.1$\,rad). Approximate element count per piece
+$\sim 80\times 20=1600$, total $\sim 6400$ surface elements.
+
+The unknowns are the nodal $\psi$ values on the open cylinder (slit
+edges have $\psi=0$ or $1$ as Dirichlet data). The BEM matrix
+$\mathsf A_{ij}=\hat n_i\cdot\vec B(\vec r_i;\psi_j)$ is evaluated at
+element centroids, with 4-point Gauss quadrature on non-adjacent panels
+and analytical near-singular subtraction on adjacent panels. The
+external return wire contributes an additional incident field
+$\vec B_{\mathrm{wire}}$ on the RHS.
+
+\paragraph{Outputs of solver.}
+$\Lp$ from the surface integral
+$\Lp=\int_S\vec K\cdot\vec A\,dS+L_{\mathrm{wire,self}}$;
+$\Veff$ from the volume overlap
+$\Veff=(R/\mu_0)\int_{V_{\mathrm{mag}}}A_\phi(s,\phi,z)\,s\,ds\,d\phi\,dz$.
+
+\section{Cross-checks}
+\label{sec:xcheck}
+
+\todo{Run XC2 (zero-slit limit), XC3 (reciprocity), XC4 (gauge
+invariance) at $\alpha=\beta=1$ before production sweep.}
+
+\section{Production sweep}
+\label{sec:prod}
+
+\todo{Sweep $\alpha\in\{0.5,1.0,2.0\}\times\beta\in\{0.20,0.12,0.08,0.05,
+0.035,0.025\}$ on lr7/lr8 SLURM partitions.}
+
+\section{Fits and decision}
+\label{sec:fit}
+
+\todo{Unconstrained and $\ell_0=0$-constrained nonlinear least-squares;
+bootstrap residuals to estimate uncertainties; apply decision table from
+spec Sec.~1.}
+
+\section{Crossover radius $R_t^\ast$}
+\label{sec:cross}
+
+\todo{If favorable: $R_t^\ast$ at $C_{\mathrm{tor}}\in\{0.1,1,10\}\,
+\mathrm{m}^3\cdot\Bmax^2$. Flag $R_t^\ast>1$\,m as impractical.}
+
+\section{Decision}
+\label{sec:decision}
+
+\todo{Binary decision per $\alpha$.}
+
+\appendix
+
+\section{Adversarial review log}
+\label{app:review}
+
+This appendix records adversarial reviews and the responses to each.
+
+\end{document}
