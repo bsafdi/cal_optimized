@@ -323,21 +323,30 @@ def build_mesh(alpha: float,
     grad_t_coef[:, 2] = +1.0 / (2.0 * elem_dt)
     grad_t_coef[:, 3] = +1.0 / (2.0 * elem_dt)
 
-    # Stream-function -> K (cyl components) for piecewise-constant K per element.
+    # Stream-function -> K (cyl components), with global convention
+    #     K = ∇_S ψ × n̂.
+    # The spec's formulas K_phi = -∂_z ψ, K_z = (1/s) ∂_phi ψ on "a cylinder"
+    # implicitly assume n̂ = -ŝ (inner cylinder).  On the outer cylinder
+    # (n̂ = +ŝ) the meridional sign flips.  Using K = ∇_S ψ × n̂ everywhere
+    # gives a single ψ that is *globally continuous* across the four
+    # segments and yields a current loop that circulates poloidally
+    # around the cross-section.
     #
-    # Spec convention:
-    #   On a cylinder of radius s:  K_phi = -∂_z ψ,  K_z = (1/s) ∂_phi ψ
-    #   On a flat cap (z=const):   K_s   = (1/s) ∂_phi ψ,  K_phi = -∂_s ψ
+    # With chi = phi - w/2, ∂_chi = ∂_phi, and t increasing A->B->C->D:
     #
-    # Using chi = phi - w/2  =>  ∂_chi = ∂_phi.
-    # On segment A (inner cyl): t = z, ∂_t = ∂_z; K_phi = -∂_t ψ,  K_z = (1/s) ∂_chi ψ
-    # On segment B (top cap):   t = alpha + (s-1), ∂_t = ∂_s; K_s = (1/s) ∂_chi ψ, K_phi = -∂_t ψ
-    # On segment C (outer cyl): t = alpha+beta + (alpha - z) = 2alpha+beta - z; ∂_t = -∂_z
-    #                                  K_phi = -∂_z ψ = +∂_t ψ,  K_z = (1/s) ∂_chi ψ
-    # On segment D (bottom cap):t = 2alpha+beta + (1+beta - s) = 2alpha+2beta-s+1; ∂_t = -∂_s
-    #                                  K_s = (1/s) ∂_chi ψ, K_phi = -∂_s ψ = +∂_t ψ
+    # Seg A (inner cyl, n̂ = -ŝ, t̂ = +ẑ):
+    #     K_z   = +(1/s) ∂_chi ψ,   K_phi = -∂_t ψ
+    # Seg B (top cap,   n̂ = +ẑ, t̂ = +ŝ):
+    #     K_s   = +(1/s) ∂_chi ψ,   K_phi = -∂_t ψ
+    # Seg C (outer cyl, n̂ = +ŝ, t̂ = -ẑ):
+    #     K_z   = -(1/s) ∂_chi ψ,   K_phi = -∂_t ψ
+    # Seg D (bottom cap,n̂ = -ẑ, t̂ = -ŝ):
+    #     K_s   = -(1/s) ∂_chi ψ,   K_phi = -∂_t ψ
+    #
+    # Note the meridional component K . t̂ = (1/s) ∂_chi ψ on *all* four
+    # segments, so current is conserved across corner seams.  The
+    # toroidal component K_phi = -∂_t ψ is also globally consistent.
 
-    # K_cyl = K_chi_coef_cyl * (d psi/d chi) + K_t_coef_cyl * (d psi/d t)
     K_chi_coef_cyl = np.zeros((n_chi * n_t, 3))   # contribution from ∂_chi ψ
     K_t_coef_cyl = np.zeros((n_chi * n_t, 3))     # contribution from ∂_t ψ
 
@@ -345,18 +354,18 @@ def build_mesh(alpha: float,
         if idx.size == 0:
             continue
         s_here = s_cen[idx]
-        if seg_id == 0:  # inner cyl
-            K_chi_coef_cyl[idx, 2] = 1.0 / s_here   # K_z = (1/s) d_chi
-            K_t_coef_cyl[idx, 1] = -1.0             # K_phi = - d_t
-        elif seg_id == 1:  # top cap
-            K_chi_coef_cyl[idx, 0] = 1.0 / s_here   # K_s = (1/s) d_chi
-            K_t_coef_cyl[idx, 1] = -1.0             # K_phi = - d_t
-        elif seg_id == 2:  # outer cyl
-            K_chi_coef_cyl[idx, 2] = 1.0 / s_here   # K_z = (1/s) d_chi
-            K_t_coef_cyl[idx, 1] = +1.0             # K_phi = + d_t (because dt = -dz)
-        elif seg_id == 3:  # bottom cap
-            K_chi_coef_cyl[idx, 0] = 1.0 / s_here   # K_s = (1/s) d_chi
-            K_t_coef_cyl[idx, 1] = +1.0             # K_phi = + d_t (because dt = -ds)
+        if seg_id == 0:        # inner cyl
+            K_chi_coef_cyl[idx, 2] = +1.0 / s_here   # K_z = +(1/s) d_chi
+            K_t_coef_cyl[idx, 1] = -1.0              # K_phi = -d_t
+        elif seg_id == 1:      # top cap
+            K_chi_coef_cyl[idx, 0] = +1.0 / s_here   # K_s = +(1/s) d_chi
+            K_t_coef_cyl[idx, 1] = -1.0              # K_phi = -d_t
+        elif seg_id == 2:      # outer cyl
+            K_chi_coef_cyl[idx, 2] = -1.0 / s_here   # K_z = -(1/s) d_chi
+            K_t_coef_cyl[idx, 1] = -1.0              # K_phi = -d_t
+        elif seg_id == 3:      # bottom cap
+            K_chi_coef_cyl[idx, 0] = -1.0 / s_here   # K_s = -(1/s) d_chi
+            K_t_coef_cyl[idx, 1] = -1.0              # K_phi = -d_t
 
     # Convert these to Cartesian per element.
     cos_phi = np.cos(elem_phi)
