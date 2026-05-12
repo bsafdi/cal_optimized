@@ -23,5 +23,5 @@ export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK:-1}
 echo "host: $(hostname)"
 echo "nproc: $OMP_NUM_THREADS"
 date
-python3 code/run_sweep.py --out outputs/production_sweep.csv --nt 15
+python3 code/run_sweep.py --out outputs/production_sweep.csv --nt 15 --wire ${WIRE_TYPE:-production}
 date

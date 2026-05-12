@@ -431,6 +431,21 @@ class WirePath:
         return self.points.shape[0] - 1
 
 
+def empty_wire(r_wire: float = 0.01) -> WirePath:
+    """Trivial wire with no segments: produces zero A_wire and B_wire
+    everywhere, and zero L_wire_self.  Used for the sheath-only patch
+    described in wire_removal_patch.md.
+
+    With this wire, the linear system has:
+      - Slit Dirichlet data (psi = +/- 1/2 on the two slit edges) as the
+        only source driving non-trivial current,
+      - No wire-coupling cross term in the RHS,
+      - L_p = sheath self-energy only,
+      - V_eff = sheath A_phi integrated over V_mag (no wire contribution).
+    """
+    return WirePath(points=np.zeros((1, 3)), radius=r_wire)
+
+
 def production_wire(alpha: float, w: float = 0.03,
                     r_wire: float = 0.01) -> WirePath:
     """Wire path from spec.  5 straight Cartesian segments:
@@ -996,6 +1011,8 @@ def run_one(alpha: float,
         wire = production_wire(alpha, w=w)
     elif wire_type == "linked":
         wire = linked_wire(alpha, w=w)
+    elif wire_type == "none":
+        wire = empty_wire()
     else:
         raise ValueError(wire_type)
     psi, info = solve_psi(mesh, wire, verbose=verbose)
@@ -1028,7 +1045,7 @@ def main():
     ap.add_argument("--nt", type=int, default=20, help="n_t_per_seg")
     ap.add_argument("--out", type=str, required=True)
     ap.add_argument("--wire", type=str, default="production",
-                     choices=["production", "linked"])
+                     choices=["production", "linked", "none"])
     ap.add_argument("--verbose", action="store_true")
     args = ap.parse_args()
     res, _ = run_one(args.alpha, args.beta, w=args.w,

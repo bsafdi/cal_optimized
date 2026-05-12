@@ -18,13 +18,16 @@ ALPHAS = [0.5, 1.0, 2.0]
 BETAS = [0.20, 0.12, 0.08, 0.05, 0.035, 0.025]
 
 
-def main(out_csv: str, n_t: int = 15, w: float = 0.03):
+def main(out_csv: str, n_t: int = 15, w: float = 0.03,
+         wire_type: str = "production"):
     rows = []
     t0_all = time.time()
+    print(f"Sweep: wire_type={wire_type}, n_t={n_t}, w={w}", flush=True)
     for alpha in ALPHAS:
         for beta in BETAS:
             t0 = time.time()
-            res, _ = run_one(alpha=alpha, beta=beta, w=w, n_t_per_seg=n_t)
+            res, _ = run_one(alpha=alpha, beta=beta, w=w, n_t_per_seg=n_t,
+                              wire_type=wire_type)
             rows.append({
                 "alpha": alpha,
                 "beta": beta,
@@ -56,5 +59,7 @@ if __name__ == "__main__":
     ap.add_argument("--out", default="outputs/production_sweep.csv")
     ap.add_argument("--nt", type=int, default=15)
     ap.add_argument("--w", type=float, default=0.03)
+    ap.add_argument("--wire", default="production",
+                     choices=["production", "linked", "none"])
     args = ap.parse_args()
-    main(args.out, n_t=args.nt, w=args.w)
+    main(args.out, n_t=args.nt, w=args.w, wire_type=args.wire)

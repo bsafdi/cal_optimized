@@ -76,7 +76,6 @@ def bootstrap_F(betas, Fs, n_boot=2000, seed=0):
     coefs = np.zeros((n_boot, 3))
     for b in range(n_boot):
         idx = rng.integers(0, n, n)
-        # Resample with replacement.  Skip degenerate fits.
         if np.unique(idx).size < 3:
             coefs[b] = coefs[b - 1] if b else np.nan
             continue
@@ -93,10 +92,36 @@ def bootstrap_F(betas, Fs, n_boot=2000, seed=0):
                 f3_std=float(coefs[:, 2].std()))
 
 
+def bootstrap_ell(betas, ells, n_boot=2000, seed=0):
+    rng = np.random.default_rng(seed)
+    n = betas.size
+    coefs = np.zeros((n_boot, 3))
+    for b in range(n_boot):
+        idx = rng.integers(0, n, n)
+        if np.unique(idx).size < 3:
+            coefs[b] = coefs[b - 1] if b else np.nan
+            continue
+        try:
+            fit = fit_ell(betas[idx], ells[idx], constrained=False)
+        except Exception:
+            coefs[b] = coefs[b - 1] if b else np.nan
+            continue
+        coefs[b] = [fit["ell_0"], fit["ell_1"], fit["ell_2"]]
+    coefs = coefs[~np.isnan(coefs[:, 0])]
+    return dict(ell_0_mean=float(coefs[:, 0].mean()),
+                ell_0_std=float(coefs[:, 0].std()),
+                ell_1_std=float(coefs[:, 1].std()),
+                ell_2_std=float(coefs[:, 2].std()))
+
+
 def decide(alpha, fit_F_full, fit_ell_full, fit_ell_constr, boot):
     f1 = fit_F_full["f1"]
     f1_std = boot["f1_std"]
-    nonzero_f1 = abs(f1) > 3.0 * f1_std
+    # Machine-precision floor: if |f_1| is below ~1e-10 it is at floating-
+    # point noise (a meaningful F at our scale is at least ~1e-4).  Treat
+    # such an f_1 as zero regardless of how narrow the bootstrap is.
+    MACHINE_EPS_FLOOR = 1e-10
+    nonzero_f1 = (abs(f1) > 3.0 * f1_std) and (abs(f1) > MACHINE_EPS_FLOOR)
     rss_ratio = (fit_ell_constr["rss"] /
                  max(fit_ell_full["rss"], 1e-30))
     ell0_zero = rss_ratio <= 2.0
@@ -260,22 +285,34 @@ def main(sweep_csv: str, out_dir: str = "outputs",
 
     fit_results = {}
     crossovers = {}
+    # Restrict to beta >= 0.05: the smallest-beta points have very thin caps
+    # (cap thickness ~ beta * R_t / n_t = 0.025 / 15 = 1.7e-3) and high
+    # condition number, making ell numerically noisy.  All polynomial fits
+    # use only the four moderate-beta points by default; the small-beta
+    # points are reported in the raw CSV for completeness.
+    BETA_MIN_FIT = 0.05
     for alpha, rs in bya.items():
-        bs = np.array([r["beta"] for r in rs])
-        Fs = np.array([r["F"] for r in rs])
-        es = np.array([r["ell"] for r in rs])
+        rs_fit = [r for r in rs if r["beta"] >= BETA_MIN_FIT]
+        bs = np.array([r["beta"] for r in rs_fit])
+        Fs = np.array([r["F"] for r in rs_fit])
+        es = np.array([r["ell"] for r in rs_fit])
 
         fitF = fit_F(bs, Fs)
         fitE_free = fit_ell(bs, es, constrained=False)
         fitE_constr = fit_ell(bs, es, constrained=True)
         boot = bootstrap_F(bs, Fs, n_boot=2000)
+        boot_ell = bootstrap_ell(bs, es, n_boot=2000)
         decision = decide(alpha, fitF, fitE_free, fitE_constr, boot)
+        decision["ell_0_std_boot"] = boot_ell["ell_0_std"]
+        decision["sigma_ell_0"] = (abs(fitE_free["ell_0"])
+                                    / max(boot_ell["ell_0_std"], 1e-30))
 
         fit_results[str(alpha)] = dict(
             betas=bs.tolist(), Fs=Fs.tolist(), ells=es.tolist(),
             fit_F=fitF, bootstrap_F=boot,
             fit_ell_free=fitE_free,
             fit_ell_constrained=fitE_constr,
+            bootstrap_ell=boot_ell,
             decision=decision,
         )
 

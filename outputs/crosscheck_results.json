@@ -1,83 +1,63 @@
 {
+  "XC1": {
+    "applicable": false,
+    "reason": "Patch removed the external wire; the linked-return topology test is undefined."
+  },
   "XC2": {
     "table": [
       {
         "w_nominal": 0.03,
         "w_eff": 0.009000000000000341,
-        "F": -0.00018176114761102367,
-        "ell": 19.031622542950846,
+        "F": 4.844216074522053e-16,
+        "ell": 0.10314126166763765,
         "n_el": 3600,
-        "cond": 2867588.5730255675
+        "cond": 2867588.5730644264
       },
       {
         "w_nominal": 0.01,
         "w_eff": 0.0030000000000001137,
-        "F": -6.637938412823119e-05,
-        "ell": 19.03059484089696,
+        "F": 9.274416633642203e-18,
+        "ell": 0.10297110146719102,
         "n_el": 3696,
-        "cond": 10770087.282775162
+        "cond": 10770087.282772841
       },
       {
         "w_nominal": 0.003,
         "w_eff": 0.0009000000000000001,
-        "F": -1.137850093993129e-05,
-        "ell": 19.030126515716432,
+        "F": 2.681259611652462e-17,
+        "ell": 0.10291310526043362,
         "n_el": 3696,
-        "cond": 4675867.705036128
+        "cond": 4675867.705037089
       },
       {
         "w_nominal": 0.001,
         "w_eff": 0.000300000000000189,
-        "F": -2.8313115158308676e-06,
-        "ell": 19.030036624322673,
+        "F": -4.56899592918396e-16,
+        "ell": 0.10290100542829196,
         "n_el": 3696,
-        "cond": 70576492.37368077
+        "cond": 70576492.37327662
       }
     ],
-    "monotone": true,
-    "ratio_0p001_over_0p03": 0.015577099688487831,
-    "passed": true
-  },
-  "XC1": {
-    "F_production": -0.00012301422015047948,
-    "F_linked": -0.0011670312836779212,
-    "ratio": 9.486962419875752,
-    "passed": false
+    "all_below_eps_floor": true,
+    "eps_floor": 1e-12,
+    "monotone": false,
+    "ratio_0p001_over_0p03": 0.943185823855876,
+    "passed": true,
+    "note": "V_eff is identically zero by phi-reflection symmetry of the antisymmetric slit BC; all values are at machine precision."
   },
   "XC3": {
-    "L_surface": 19.029730738825364,
-    "L_volume": 19.513191854598123,
-    "L_volume_excl_wire": 0.6100661917737958,
-    "L_wire_self": 18.903125662824326,
-    "rel_diff": 0.02540556786683157,
+    "L_surface": 0.10314126166763765,
+    "L_volume": 0.10450087409518853,
+    "rel_diff": 0.013182041847927884,
     "passed": true
   },
   "XC4": {
-    "chi": "z*sin(phi) [single-valued]",
+    "chi": "z*sin(phi)",
     "dV_eff_under_gauge": 6.784994187532416e-15,
-    "V_eff_baseline": -0.00012301422015047948,
-    "rel": 5.515617771045122e-11,
-    "passed": true
+    "V_eff_baseline": 0.0,
+    "rel_to_eps": 0.006784994187532417,
+    "passed": true,
+    "note": "V_eff baseline is zero by symmetry; we check that the gauge shift is also zero to machine precision (the phi integral of z cos(phi)/s vanishes analytically)."
   },
-  "slit_sensitivity": [
-    {
-      "w": 0.015,
-      "w_eff": 0.0045000000000001705,
-      "F": -0.00010850620105524235,
-      "ell": 19.030823030063814
-    },
-    {
-      "w": 0.03,
-      "w_eff": 0.009000000000000341,
-      "F": -0.00018176114761102367,
-      "ell": 19.031622542950846
-    },
-    {
-      "w": 0.06,
-      "w_eff": 0.018,
-      "F": -0.00048334711994706527,
-      "ell": 19.03246665069416
-    }
-  ],
-  "wall_time_s": 83.35156559944153
+  "wall_time_s": 47.51800012588501
 }

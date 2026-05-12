@@ -10,7 +10,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(__file__))
 from bem_solver import (
-    build_mesh, production_wire, linked_wire,
+    build_mesh, production_wire, linked_wire, empty_wire,
     solve_psi, compute_Lp, compute_Veff, K_from_psi,
     A_from_wire, run_one,
 )

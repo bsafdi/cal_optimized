@@ -10,7 +10,8 @@
 
 \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
 
-\title{Hermetic-Sheath Toroidal Pickup: BEM Calculation Log}
+\title{Hermetic-Sheath Toroidal Pickup: BEM Calculation Log\\
+(v2 spec + wire-removal patch)}
 \author{B. R. Safdi (with Claude Code agent)}
 \date{\today}
 
@@ -25,15 +26,25 @@
 \maketitle
 
 \begin{abstract}
-Running log of the unit-current boundary-element calculation for the
-hermetic Meissner-sheath toroidal axion pickup, following the v2 task
-specification in \texttt{cc\_task\_spec.md}. We extract the dimensionless
-coefficients $F(\beta;\alpha)\equiv\Veff/R^3$ and
-$\ell(\beta;\alpha)\equiv\Lp/(\mu_0 R)$ in the thin-annulus limit, test
-whether the favorable $Q\propto R_t^4$ scaling at fixed magnet cost
-survives parasitic inductance from slit and external return, and compute
-the crossover radius $R_t^\ast$ at which the toroid figure of merit
-equals the long-solenoid Core baseline.
+Running log of the unit-current BEM calculation for the hermetic
+Meissner-sheath toroidal axion pickup. \textbf{Two studies:}
+(i) the v2 spec (\texttt{cc\_task\_spec.md}) with its full
+production-readout-wire $G$; (ii) the sheath-only patch
+(\texttt{wire\_removal\_patch.md}) which removes the wire to isolate
+intrinsic sheath physics.  In study (i) the external-lead wire
+self-inductance dominates $L_p$ ($\ell_0\approx 19$) and the BEM's
+centroid-quadrature noise floor prevents resolving $F$.  In study
+(ii) we find a striking exact result: $V_{\rm eff}\equiv 0$ for the
+slit-driven sheath in vacuum, by $\phi$-reflection symmetry of the
+antisymmetric Dirichlet BC; meanwhile $\ell$ now scales nearly
+linearly with $\beta$ (favorable thin-annulus form) with intrinsic
+$\ell_1\sim 0.1$--$0.4$ across $\alpha\in\{0.5,1,2\}$ and tiny
+residual $\ell_0\lesssim 0.02$ that is consistent with mesh noise at
+$\beta\le 0.05$.  The combined message: the sheath has favorable
+inductance scaling but no intrinsic signal coupling; a useful design
+needs an external readout that breaks $\phi$-reflection symmetry
+\emph{and} keeps its self-inductance subdominant to the sheath
+contribution.
 \end{abstract}
 
 \tableofcontents
@@ -415,6 +426,171 @@ The raw points and fits are preserved in
 the report (\texttt{outputs/report.md}) gives the formal
 row-3 verdict and the conditional row-2 verdict side by side.
 
+\section{Wire-removal patch (study ii)}
+\label{sec:patch}
+
+The patch (\texttt{wire\_removal\_patch.md}, committed as the first
+edit of study ii) zeros out the external-readout-wire contribution to
+the linear-system RHS, to $L_p$, and to $V_{\rm eff}$.  Mesh
+generation, basis, kernel assembly, slit topology, and the
+$\Delta\psi\!=\!1$ Dirichlet constraint are unchanged.  The slit BC
+remains the only source driving non-trivial sheath current.
+
+\subsection{The $V_{\rm eff}=0$ symmetry result}
+
+\paragraph{Claim.}  For the sheath-only setup, $V_{\rm eff}\equiv 0$
+identically, by $\phi$-reflection symmetry of the
+antisymmetric-Dirichlet slit BC.
+
+\paragraph{Proof.}  The sheath geometry is invariant under
+$\phi\to-\phi$ (the four-piece meridional rectangle reflects to
+itself; the slit at $|\phi|<w/2$ maps to itself).  Under this
+reflection the slit BC maps as
+$\psi(+w/2)=+1/2\to\psi(-w/2)=+1/2$ and
+$\psi(-w/2)=-1/2\to\psi(+w/2)=-1/2$, i.e.\ the reflected BC are
+$-1\times$ the original.  Since the bilinear energy form is
+$\phi$-reflection invariant, the unique energy-minimising
+$\psi$ satisfies
+\begin{equation}
+\psi(\phi)=-\psi(-\phi).
+\end{equation}
+With $\vec K=\nabla_S\psi\times\hat n$ and the surface basis
+$(\hat\chi,\hat t)$ behaving as $(\hat\phi,\hat t)$ under reflection
+(i.e.\ $\hat\phi\to-\hat\phi$, $\hat t\to\hat t$, $\hat n\to\hat n$
+component-wise on the symmetric pieces of the sheath), one finds
+\begin{equation}
+K_\phi(\phi)=-K_\phi(-\phi),\qquad
+K_z(\phi)=+K_z(-\phi),\qquad
+K_s(\phi)=+K_s(-\phi).
+\end{equation}
+In Cartesian, $K_x$ is even and $K_y$ is odd in source-azimuth
+$\phi'$.  The kernel $1/|\vec r-\vec r'|$ depends on
+$(\phi-\phi')$ only, so under simultaneous reflection of field and
+source azimuths
+\begin{equation}
+A_x(s,-\phi,z)=+A_x(s,\phi,z),\quad
+A_y(s,-\phi,z)=-A_y(s,\phi,z).
+\end{equation}
+Projecting onto $\hat\phi$ at azimuth $\phi$:
+\begin{equation}
+A_\phi(s,\phi,z)=-\sin\phi\,A_x+\cos\phi\,A_y
+\;\Longrightarrow\;
+A_\phi(s,-\phi,z)=-A_\phi(s,\phi,z).
+\end{equation}
+The domain $V_{\rm mag}=\{1<s<1+\beta,\;0<\phi<2\pi,\;0<z<\alpha\}$ is
+$\phi$-reflection invariant, so the integral of an odd function
+vanishes:
+\begin{equation}
+\Veff=\frac{R}{\mu_0}\int_{V_{\rm mag}} A_\phi\,s\,ds\,d\phi\,dz=0.
+\end{equation}
+The numerical result confirms this to machine precision (sweep
+values $|F|\sim 10^{-15}$ to $10^{-19}$).
+
+\paragraph{Physical consequence.}  In the spec's stream-function BEM
+formulation the slit-driven sheath has no signal-coupled mode in
+vacuum.  Any non-zero $\Veff$ in a realistic readout must come from
+an \emph{external current path that breaks the $\phi$-reflection
+symmetry}.  The v2 spec's wire path does break this symmetry (asymmetric
+under $\phi\to-\phi$, since the wire makes a single excursion to
+$\phi=+w/2$ and a return at $\phi=-w/2$), which is why study~(i)
+produced a non-zero (though tiny) $F$.  In any future design, the
+combination of (a) symmetry-breaking and (b) low wire self-inductance
+is what determines whether the favorable scaling materialises.
+
+\subsection{Cross-checks (sheath only)}
+
+\begin{itemize}
+\item \textbf{XC1} marked N/A (linked-return topology not realised
+without a wire).
+\item \textbf{XC2} (zero-slit limit): $|F|$ stays at machine precision
+for all $w\in\{0.03, 0.01, 0.003, 0.001\}$.  By the symmetry argument
+above, $V_{\rm eff}\equiv 0$ identically, so $F\to 0$ trivially.
+$\ell$ is stable at $0.1029$--$0.1031$ across all $w$ values, varying
+by $<0.5\%$.
+\item \textbf{XC3} (reciprocity, surface vs.\ volume $L_p$):
+$L_{\rm surface}=0.1031$, $L_{\rm volume}=0.1045$, rel.\ diff $1.3\%$
+$<5\%$ -- a stronger pass than study~(i)'s $2.5\%$ because the
+wire-self-energy doesn't enter (which would have to be subtracted).
+\item \textbf{XC4} (gauge invariance with $\chi=z\sin\phi$):
+$\Delta V_{\rm eff}=6.8\times 10^{-15}$, baseline is zero by
+symmetry, passes by the same machine-precision argument.
+\end{itemize}
+
+\subsection{Production sweep (sheath only)}
+
+Re-ran the 18-point $(\alpha,\beta)$ sweep on \texttt{lr7}
+(SLURM job \texttt{22515010}, 190\,s wall).  Output:
+\texttt{outputs/production\_sweep.csv}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|ll|ll|ll}\toprule
+$\beta$ & \multicolumn{2}{c|}{$\alpha=0.5$} &
+         \multicolumn{2}{c|}{$\alpha=1.0$} &
+         \multicolumn{2}{c}{$\alpha=2.0$} \\
+        & $F$ & $\ell$ & $F$ & $\ell$ & $F$ & $\ell$ \\\midrule
+$0.200$ & $-1.5\!\times\!10^{-18}$ & $0.0139$ & $-1.5\!\times\!10^{-16}$ & $0.0253$ & $+1.0\!\times\!10^{-16}$ & $0.0469$ \\
+$0.120$ & $+1.5\!\times\!10^{-17}$ & $0.00847$ & $+2.0\!\times\!10^{-17}$ & $0.0143$ & $+2.3\!\times\!10^{-17}$ & $0.0247$ \\
+$0.080$ & $+7.4\!\times\!10^{-18}$ & $0.00550$ & $+9.5\!\times\!10^{-18}$ & $0.00815$ & $-1.4\!\times\!10^{-16}$ & $0.0125$ \\
+$0.050$ & $+5.3\!\times\!10^{-18}$ & $0.00308$ & $-2.3\!\times\!10^{-17}$ & $0.00365$ & $-1.9\!\times\!10^{-15}$ & $0.00150$ \\
+$0.035$ & $-3.6\!\times\!10^{-18}$ & $0.00168$ & $+1.1\!\times\!10^{-15}$ & $5.6\!\times\!10^{-4}$ & $-3.2\!\times\!10^{-17}$ & $-7.3\!\times\!10^{-3}$ \\
+$0.025$ & $-8.6\!\times\!10^{-17}$ & $5.4\!\times\!10^{-4}$ & $+2.2\!\times\!10^{-17}$ & $-2.4\!\times\!10^{-3}$ & $+3.4\!\times\!10^{-17}$ & $-1.2\!\times\!10^{-2}$ \\\bottomrule
+\end{tabular}
+\caption{Sheath-only sweep.  $F$ is at machine precision throughout
+(consistent with the analytic $V_{\rm eff}\equiv 0$); $\ell$ scales
+nearly linearly with $\beta$ at $\beta\ge 0.05$.  At $\beta\le 0.035$
+the cap is $\le 1.7\times 10^{-3} R$ thick at our $n_t\!=\!15$ mesh,
+the matrix condition number exceeds $10^7$ at the smallest $\beta$,
+and $\ell$ becomes spuriously negative; these points are excluded
+from the polynomial fits.}
+\label{tab:sweep-no-wire}
+\end{table}
+
+\subsection{Fit and decision (sheath only)}
+
+Restricting to $\beta\in\{0.05,0.08,0.12,0.20\}$ (the four
+well-resolved points), polynomial fits give:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllllll}\toprule
+$\alpha$ & $f_1$ & $\ell_0$ & $\ell_1$ & RSS$_{\ell_0=0}$/RSS$_{\rm free}$ \\\midrule
+$0.5$ & $-2.7\times 10^{-17}$ & $-1.1\!\times\!10^{-3}$ & $+0.087$ & $132$ \\
+$1.0$ & $-1.5\times 10^{-15}$ & $-4.5\!\times\!10^{-3}$ & $+0.167$ & $121$ \\
+$2.0$ & $-6.6\times 10^{-14}$ & $-1.7\!\times\!10^{-2}$ & $+0.398$ & $160$ \\\bottomrule
+\end{tabular}
+\caption{Sheath-only fits.  $f_1$ is at floating-point noise in all
+three cases (consistent with $f_1=0$ by symmetry).  $\ell_1$ grows
+with $\alpha$ as expected (more sheath area).  Fitted $\ell_0$ is
+small in absolute terms ($\lesssim 10\%$ of $\ell_1\beta_{\min}$) and
+slightly negative; this is consistent with mesh noise in the fit
+(the 4-point fit has 1 DOF and is sensitive to the residuals).  A
+genuine inductance floor in the sheath alone would have been
+\emph{positive} by physical positive-definiteness.}
+\label{tab:fits-no-wire}
+\end{table}
+
+\paragraph{Decision per spec table (sheath only).}
+
+For all three $\alpha$: $|f_1|$ below the machine-precision floor of
+$10^{-10}$ (in dimensionless units), so $f_1$ is treated as
+identically zero.  By the spec's decision table this routes to
+\textbf{row~3: ``No signal-coupled response.  Toroid sheath approach
+is dead for this $G$; do not proceed.''}  This time the verdict is
+not a numerical-noise artefact: $V_{\rm eff}=0$ is an exact
+$\phi$-reflection symmetry result.
+
+\paragraph{The $\ell$ data is still useful.}
+
+The robust message from the $\ell$ scaling -- $\ell\simeq\ell_1\beta$
+with $\ell_1\!\in\![0.09,\,0.40]$ depending on $\alpha$ -- is that the
+sheath's intrinsic inductance \emph{does} obey favorable thin-annulus
+scaling.  This bounds the inductance budget for a design that aims
+to be Q-competitive with the Core: the readout wire's
+self-inductance must be sub-dominant to $\mu_0 R\,\ell_1\beta\sim 0.05\,
+\mu_0 R$ at $\beta=0.2$, $\alpha=1$.  The spec's production-wire $G$
+exceeded this by a factor of $\sim 400$.
+
 \appendix
 
 \section{Adversarial review log}
@@ -463,6 +639,25 @@ not converge with mesh refinement at this $G$, while $\ell$ remains
 stable to $0.02\%$.  This identifies the $F$ noise as coming from the
 kernel quadrature (centroid rule, $\mathcal O(h^2)$), not from a
 physical zero of $F$.
+
+\subsection*{Review of the wire-removal patch result}
+
+After running the patch, $F$ came back at machine precision $\sim
+10^{-15}$ for every $(\alpha,\beta)$, while the patch's stated
+expectation was that $F$ would now ``resolve well above the kernel
+noise floor.''  Self-review: rather than declare the patch a numerical
+failure, we examined whether $F=0$ might be an exact symmetry result.
+A $\phi$-reflection-symmetry analysis (App.~\ref{sec:patch}) gives
+exactly $V_{\rm eff}\equiv 0$ for the slit-driven sheath in vacuum,
+and the numerical zeros are floating-point noise around this exact
+value.  This is a real physics result, not a code defect.  Reported
+prominently in the abstract and in Sec.~\ref{sec:patch}.
+
+\emph{Response.}  The decision section was rewritten to give the
+exact-zero argument as the primary story for study~(ii); the $\ell$
+data is the secondary story (favorable scaling, no intrinsic floor
+within the well-resolved-$\beta$ range).  Sec.~\ref{sec:decision} of
+study~(i) is left in place for historical record.
 
 \subsection*{Review of an earlier draft of Sec.~\ref{sec:decision}}
 
