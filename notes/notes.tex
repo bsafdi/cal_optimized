@@ -771,6 +771,38 @@ is therefore not a dynamical favorable-scaling result; it is
 geometry.  The dynamical content is in the $\alpha$-dependence and
 the ratio $f_1^4/\ell^2$, which the crossover table captures.
 
+\subsection{What happens at fixed magnet cost (small-$\beta$ limit)}
+\label{sec:fixed-cost}
+
+A common point of confusion: the dimensionless $F(\beta)\propto\beta$
+does \emph{not} imply $V_{\rm eff}\to 0$ at small $\beta$ when the
+comparison is done at fixed magnet cost.  With
+$C=2\pi B_{\max}^2 R^3\alpha\ln(1+\beta)\approx 2\pi B^2 R^3\alpha\beta$
+for small $\beta$, fixing $C$ gives $R\propto\beta^{-1/3}\to\infty$,
+and
+\begin{align}
+V_{\rm eff} &= R^3\, F(\beta)
+            \approx \frac{C}{2\pi\alpha B_{\max}^2\beta}\,f_1\beta
+            = \frac{C f_1}{2\pi\alpha B_{\max}^2}
+            \quad\text{(constant in $\beta$)},
+            \\
+L_p &= \mu_0 R\,\ell(\beta)
+     \approx \mu_0\left(\frac{C}{2\pi\alpha B_{\max}^2\beta}\right)^{1/3}\ell_0
+     \quad\text{(grows as $\beta^{-1/3}$ because $\ell_0\ne 0$)},
+            \\
+Q^{\rm tor} &\propto \frac{V_{\rm eff}^4}{L_p^2}
+            \propto \beta^{2/3} \to 0 \quad(\beta\to 0).
+\end{align}
+So in the inductance-floor regime $V_{\rm eff}$ stays finite as the
+annulus thins (at fixed cost), and the problem is that $L_p$ grows
+because $R$ grows while $\ell_0$ doesn't shrink.  In the favorable
+regime ($\ell=\ell_1\beta$, no floor) one finds $Q^{\rm tor}\propto
+\beta^{-4/3}\to\infty$: that is the regime where the toroid
+asymptotically beats the Core.  Our data sits in the inductance-floor
+regime, so $Q^{\rm tor}$ at fixed cost \emph{decreases} as $\beta$
+decreases.  The toroid is most competitive at the largest $\beta$ in
+our sweep ($\beta=0.20$); the crossover table reports $Q$ there.
+
 \paragraph{Caveat on $\ell_0$.}  The reported $\ell_0$ is the
 variational minimum of $L_p$ subject to the BC ``$\psi=0$ on both
 slit edges,'' which corresponds physically to ``$\vec K_{\rm har}$

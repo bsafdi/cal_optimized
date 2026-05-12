@@ -78,12 +78,24 @@ The ratio (V_eff)^4 / L_p^2 ∝ F^4/ell^2 at fixed beta. Pushing this beyond the
 
 Going to **larger β** (β > 0.2, the toroid no longer being "thin annulus") would change the scaling — possibly favorably. The spec asks about the THIN-ANNULUS limit, where the toroid currently loses.
 
+## Scaling at fixed cost (the right framing)
+
+The dimensionless F(β) ∝ β linear scaling is *not* "V_eff → 0 as the annulus thins." At fixed cost C ∝ R³ α β (small β), R grows as β^(−1/3), and
+
+* **V_eff = R³ · F ≈ C f₁/(2π α B²) = constant in β**. The signal doesn't vanish.
+* **L_p = μ₀ R · ell ≈ μ₀ · (C/(2π α B² β))^(1/3) · ell₀** grows as β^(−1/3), because ell has a floor ell₀ ≈ 1–2 that doesn't shrink with β.
+* **Q^tor ∝ V_eff⁴/L_p² ∝ β^(2/3) → 0** as β → 0.
+
+For comparison, the *favorable* scaling (ell = ell₁ β, no floor) would give Q^tor ∝ β^(−4/3) → ∞: that's the regime where the toroid asymptotically beats the Core. Our data shows the floor scenario instead, so Q^tor at fixed cost decreases as β decreases — larger β within the swept range is more favorable.
+
+This is why the crossover table reports Q^tor/Q^core at β = 0.2 (the largest β in the sweep, hence the most-competitive end). At smaller β, the toroid loses by more.
+
 ## Bottom line
 
-For the spec's intended "unit current driven across the slit" interpretation (now correctly implemented as the harmonic 1-form K_har on the cut torus), the toroid hermetic-sheath pickup has:
+For the spec's "unit current driven across the slit" interpretation, now correctly implemented as the harmonic 1-form K_har on the cut torus:
 
-1. Well-resolved V_eff scaling linearly with β (favorable thin-annulus form for the signal).
-2. An intrinsic inductance floor ell_0 ≈ 1-2 (the harmonic-mode self-energy) that prevents Q from achieving the favorable R_t^4 scaling.
-3. Q_tor/Q_core ≈ 0.2-0.35 at β=0.2 across alpha ∈ {0.5, 1.0, 2.0} — toroid loses, but only by a factor of 3-5, not the catastrophic ~10^13 of the wire-included case.
+1. The dimensionless coefficient F(β) ≡ V_eff/R³ is linear in β (f₁ ≈ 1–1.5). **In physical units at fixed cost, V_eff is constant in β as β → 0 — it does NOT vanish.**
+2. There is an intrinsic inductance floor ell_0 ≈ 1–2 (harmonic-mode self-energy) that does not shrink with β. At fixed cost, this makes L_p ∝ R · ell_0 grow as β^(−1/3), defeating the would-be favorable scaling.
+3. Q^tor/Q^core ≈ 0.2–0.35 at β = 0.2 (best in our sweep); decreases for smaller β at fixed cost. Toroid loses by factor 3–5 — but 10¹² better than the wire-included study (i).
 
-**Decision per spec table: row 2 (inductance floor) for all alpha**, with the floor now being the IRREDUCIBLE harmonic-mode self-energy rather than a choice-of-wire artifact.
+**Decision per spec table: row 2 (inductance floor) for all alpha**, with the floor now being the harmonic-mode self-energy rather than a choice-of-wire artifact. The favorable thin-annulus regime Q^tor ∝ R_t^4 is not realised because ell_0 ≠ 0.
