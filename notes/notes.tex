@@ -659,6 +659,43 @@ data is the secondary story (favorable scaling, no intrinsic floor
 within the well-resolved-$\beta$ range).  Sec.~\ref{sec:decision} of
 study~(i) is left in place for historical record.
 
+\subsection*{Adversarial review of the $V_{\rm eff}=0$ symmetry proof}
+
+A third reviewer was asked to find the most damaging objection to the
+$\phi$-reflection symmetry argument.  The candidate fatal objection
+was: \emph{``$\vec B_0=B_{\max}(R/s)\hat\phi$ is itself a vector
+field, and under $\phi\to-\phi$ one has $\hat\phi\to-\hat\phi$, so
+$\vec B_0\cdot\vec A_1$ should transform with both factors flipping
+sign, making the product even, not odd, and the integral non-zero.''}
+
+\emph{Resolution.}  The reviewer correctly concluded the objection is
+not fatal.  The transformation conflates two different concepts: how a
+vector field transforms as a geometric object under an active
+diffeomorphism, vs.\ how a coordinate component varies as a scalar
+function of $\phi$.  The integral
+$\Veff=(1/\mu_0)\int \vec B_0\cdot\vec A_1\,dV=
+\int(R/s) A_\phi(s,\phi,z)\,s\,ds\,d\phi\,dz=\int A_\phi(s,\phi,z)\,
+ds\,d\phi\,dz$ uses the cylindrical $\phi$-component
+$A_\phi(s,\phi,z)$ evaluated locally at each point in $V_{\rm mag}$.
+The prefactor $R/s$ is $\phi$-independent (manifestly invariant under
+reflection).  The proof's claim
+$A_\phi(s,-\phi,z)=-A_\phi(s,\phi,z)$ is a statement about the
+component as a function of $\phi$, established by the source-symmetry
+analysis and the $\phi-\phi'$ dependence of the kernel.  The code
+(\texttt{bem\_solver.py} \texttt{compute\_Veff}) evaluates exactly
+$A_\phi = -A_x\sin\phi+A_y\cos\phi$ at each grid point and sums with
+the volume Jacobian $s\,ds\,d\phi\,dz$, with the $1/s$ from
+$\vec B_0$ cancelling the $s$ in the Jacobian.  No double-flip occurs;
+the integrand is odd in $\phi$ and the integral vanishes.
+
+\emph{Response.}  No changes needed.  The reviewer also flagged
+``minor: ensure \texttt{A\_from\_wire} returns zero for the empty
+wire.''  Verified: the empty wire has \texttt{points} of shape (1, 3)
+so \texttt{starts}/\texttt{ends} are empty and the loop in
+\texttt{A\_from\_wire} contributes nothing.  The numerics confirm:
+$|F|\sim 10^{-15}$ is exactly floating-point noise around the
+analytic zero.
+
 \subsection*{Review of an earlier draft of Sec.~\ref{sec:decision}}
 
 A second adversarial reviewer flagged a logical error in the earlier
