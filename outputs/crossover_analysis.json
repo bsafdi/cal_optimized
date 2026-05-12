@@ -1,0 +1,134 @@
+{
+  "0.5": {
+    "V_mag_0.1_m3": {
+      "V_mag_m3": 0.1,
+      "R_m_m": 0.3169202883774542,
+      "R_t_m": 0.5589041944778033,
+      "Veff_core_m3": 0.00477464829275686,
+      "Lp_core_H": 1.9015217302647246e-08,
+      "Veff_tor_m3": 2.8855888741664844e-07,
+      "Lp_tor_H": 3.098137447958058e-08,
+      "Q_core": 898344632.2135234,
+      "Q_tor": 4.51457086222191e-09,
+      "Q_tor_over_Q_core": 5.0254331136793195e-18,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.782e+01 dominates L_p."
+    },
+    "V_mag_1.0_m3": {
+      "V_mag_m3": 1.0,
+      "R_m_m": 0.6827840632552957,
+      "R_t_m": 1.2041225849873056,
+      "Veff_core_m3": 0.04774648292756861,
+      "Lp_core_H": 4.0967043795317744e-08,
+      "Veff_tor_m3": 2.885588874166484e-06,
+      "Lp_tor_H": 6.674734792367689e-08,
+      "Q_core": 1935424839244.7502,
+      "Q_tor": 9.726348076178032e-06,
+      "Q_tor_over_Q_core": 5.025433113679314e-18,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.782e+01 dominates L_p."
+    },
+    "V_mag_10.0_m3": {
+      "V_mag_m3": 10.0,
+      "R_m_m": 1.471013671678133,
+      "R_t_m": 2.5942034681475166,
+      "Veff_core_m3": 0.47746482927568595,
+      "Lp_core_H": 8.826082030068797e-08,
+      "Veff_tor_m3": 2.8855888741664844e-05,
+      "Lp_tor_H": 1.4380280183439712e-07,
+      "Q_core": 4169746413618267.0,
+      "Q_tor": 0.020954781702642842,
+      "Q_tor_over_Q_core": 5.025433113679324e-18,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.782e+01 dominates L_p."
+    }
+  },
+  "1.0": {
+    "V_mag_0.1_m3": {
+      "V_mag_m3": 0.1,
+      "R_m_m": 0.3169202883774542,
+      "R_t_m": 0.44360255313175206,
+      "Veff_core_m3": 0.00477464829275686,
+      "Lp_core_H": 1.9015217302647246e-08,
+      "Veff_tor_m3": 5.938166241246375e-06,
+      "Lp_tor_H": 6.53406754813389e-08,
+      "Q_core": 898344632.2135234,
+      "Q_tor": 0.00018202128851123423,
+      "Q_tor_over_Q_core": 2.026185519278201e-13,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.887e+01 dominates L_p."
+    },
+    "V_mag_1.0_m3": {
+      "V_mag_m3": 1.0,
+      "R_m_m": 0.6827840632552957,
+      "R_t_m": 0.9557127290537584,
+      "Veff_core_m3": 0.04774648292756861,
+      "Lp_core_H": 4.0967043795317744e-08,
+      "Veff_tor_m3": 5.938166241246373e-05,
+      "Lp_tor_H": 1.4077221792711227e-07,
+      "Q_core": 1935424839244.7502,
+      "Q_tor": 0.3921529782929046,
+      "Q_tor_over_Q_core": 2.0261855192781974e-13,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.887e+01 dominates L_p."
+    },
+    "V_mag_10.0_m3": {
+      "V_mag_m3": 10.0,
+      "R_m_m": 1.471013671678133,
+      "R_t_m": 2.0590206571784595,
+      "Veff_core_m3": 0.47746482927568595,
+      "Lp_core_H": 8.826082030068797e-08,
+      "Veff_tor_m3": 0.0005938166241246372,
+      "Lp_tor_H": 3.0328454969489893e-07,
+      "Q_core": 4169746413618267.0,
+      "Q_tor": 844.8679802335535,
+      "Q_tor_over_Q_core": 2.0261855192781987e-13,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 1.887e+01 dominates L_p."
+    }
+  },
+  "2.0": {
+    "V_mag_0.1_m3": {
+      "V_mag_m3": 0.1,
+      "R_m_m": 0.3169202883774542,
+      "R_t_m": 0.35208757974856114,
+      "Veff_core_m3": 0.00477464829275686,
+      "Lp_core_H": 1.9015217302647246e-08,
+      "Veff_tor_m3": 4.2575778184742905e-06,
+      "Lp_tor_H": 6.332043976597247e-08,
+      "Q_core": 898344632.2135234,
+      "Q_tor": 5.122035107145858e-05,
+      "Q_tor_over_Q_core": 5.701637126194154e-14,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 2.075e+01 dominates L_p."
+    },
+    "V_mag_1.0_m3": {
+      "V_mag_m3": 1.0,
+      "R_m_m": 0.6827840632552957,
+      "R_t_m": 0.7585496957396675,
+      "Veff_core_m3": 0.04774648292756861,
+      "Lp_core_H": 4.0967043795317744e-08,
+      "Veff_tor_m3": 4.257577818474291e-05,
+      "Lp_tor_H": 1.3641975201988545e-07,
+      "Q_core": 1935424839244.7502,
+      "Q_tor": 0.11035090118396215,
+      "Q_tor_over_Q_core": 5.701637126194151e-14,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 2.075e+01 dominates L_p."
+    },
+    "V_mag_10.0_m3": {
+      "V_mag_m3": 10.0,
+      "R_m_m": 1.471013671678133,
+      "R_t_m": 1.63424577861467,
+      "Veff_core_m3": 0.47746482927568595,
+      "Lp_core_H": 8.826082030068797e-08,
+      "Veff_tor_m3": 0.00042575778184742894,
+      "Lp_tor_H": 2.939074461571883e-07,
+      "Q_core": 4169746413618267.0,
+      "Q_tor": 237.74380958700831,
+      "Q_tor_over_Q_core": 5.701637126194153e-14,
+      "favorable": false,
+      "note": "Optimistic: favorable scaling did not hold; ell_0 = 2.075e+01 dominates L_p."
+    }
+  }
+}

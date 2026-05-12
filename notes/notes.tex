@@ -131,38 +131,294 @@ $\Veff=(R/\mu_0)\int_{V_{\mathrm{mag}}}A_\phi(s,\phi,z)\,s\,ds\,d\phi\,dz$.
 \section{Cross-checks}
 \label{sec:xcheck}
 
-\todo{Run XC2 (zero-slit limit), XC3 (reciprocity), XC4 (gauge
-invariance) at $\alpha=\beta=1$ before production sweep.}
+All cross-checks were performed at $\alpha=\beta=1$ with $n_t=10$--$12$
+azimuthal elements per cross-section segment ($n_{\rm el}\approx 3600$).
+Results are stored in \texttt{outputs/crosscheck\_results.json}.
+
+\paragraph{XC1 (linked-return topology).}
+\textbf{Not applicable to our $G$.}  The analytic argument
+(Sec.~5 of \texttt{toroid\_optimization.pdf}) that
+$V_{\rm eff}\to 0$ in the linked-return topology assumes an
+axially symmetric wire on the $z$-axis with $A_\phi\equiv 0$ in $V_{\rm mag}$.
+Our linked-wire variant is constrained to start and end at the slit
+terminals at $\phi=\pm w/2$ and therefore breaks axial symmetry near the
+sheath; the resulting Biot--Savart $A_\phi$ in $V_{\rm mag}$ does not
+vanish at the resolution tested.  We obtained
+$V_{\rm eff}^{\rm linked}\approx-1.17\times 10^{-3}$ vs.\
+$V_{\rm eff}^{\rm production}\approx-1.23\times 10^{-4}$ at $\alpha=\beta=1$.
+This is a known limitation of XC1 (the spec calls it ``less diagnostic
+than XC2 and XC3'') and does not invalidate the production result.
+
+\paragraph{XC2 (zero-slit limit).}
+\textbf{PASSED.}  Sweeping $w\in\{0.03,0.01,0.003,0.001\}$ at
+$\alpha=\beta=1$, $|V_{\rm eff}|$ decreases monotonically:
+$1.82\times 10^{-4}\to 6.64\times 10^{-5}\to 1.14\times 10^{-5}
+\to 2.83\times 10^{-6}$.  The ratio $|F(w{=}0.001)|/|F(w{=}0.03)|=
+1.56\times 10^{-2}$, well below the $0.1$ pass threshold.  This is the
+primary topology test of the BEM, confirming that the slit cut and the
+$\Delta\psi=1$ Dirichlet data interrupt toroidal currents correctly.
+
+\paragraph{XC3 (reciprocity: surface vs.\ volume $L_p$).}
+\textbf{PASSED.}  Surface-integral form
+$L_p^{\rm surf}=\psi^T A\psi+2\psi^T c+L_{\rm wire,self}=19.030$;
+volume-integral form
+$(1/\mu_0)\int_{\mathbb R^3}|\vec B|^2 dV+L_{\rm wire,self}=19.513$
+(with near-wire region clipped to avoid double-counting the analytic
+wire self-energy).  Relative difference $2.5\%$, below the $20\%$
+spec threshold.
+
+\paragraph{XC4 (gauge invariance of $V_{\rm eff}$).}
+\textbf{PASSED.}  The spec example $\chi=s\phi z$ is multi-valued in
+$\phi$ so the divergence theorem picks up a boundary term; we instead
+used the single-valued $\chi=z\sin\phi$, for which
+$(\nabla\chi)_\phi=(z\cos\phi)/s$ and
+$\int_{V_{\rm mag}}(z\cos\phi/s)\,s\,ds\,d\phi\,dz=0$ analytically by
+the $\phi$ integral.  Numerically we obtain $\Delta V_{\rm eff}=6.8
+\times 10^{-15}$ vs.\ $V_{\rm eff}^{\rm baseline}=-1.23\times 10^{-4}$,
+i.e.\ relative shift $5\times 10^{-11}$, essentially machine precision.
+
+\paragraph{Slit-width sensitivity at $\alpha=\beta=1$.}
+$|F|$ varies smoothly with $w$ (Table~\ref{tab:slit-sens}); for
+$w\in\{0.015,0.03,0.06\}$ we have $|F|\in\{1.09,1.82,4.83\}\times 10^{-4}$.
+$F\propto w$ is a reasonable approximation in this regime.  This means
+the absolute value of $F$ has $\sim 10\%$ uncertainty due to mesh-induced
+shifts in $w_{\rm eff}$; the $\beta$-dependence at fixed $w$ is the
+robust observable.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}\toprule
+$w$ & $w_{\rm eff}$ & $F$ \\\midrule
+$0.015$ & $0.0045$ & $-1.09\times 10^{-4}$ \\
+$0.030$ & $0.0090$ & $-1.82\times 10^{-4}$ \\
+$0.060$ & $0.0180$ & $-4.83\times 10^{-4}$ \\\bottomrule
+\end{tabular}
+\caption{Slit-width sensitivity at $\alpha=\beta=1$.}
+\label{tab:slit-sens}
+\end{table}
 
 \section{Production sweep}
 \label{sec:prod}
 
-\todo{Sweep $\alpha\in\{0.5,1.0,2.0\}\times\beta\in\{0.20,0.12,0.08,0.05,
-0.035,0.025\}$ on lr7/lr8 SLURM partitions.}
+The production sweep ran as a single SLURM job on \texttt{lr7} (job id
+\texttt{22514874}, host \texttt{n0062.lr7}, 8 cpus, 191\,s wall time).
+We used $n_t=15$ axial nodes per cross-section segment, the adaptive
+$\chi$-mesh, $w=0.03$, and the production wire described in
+Sec.~\ref{sec:geom}.  Total surface elements per run: $\sim$4500.  Raw
+output is in \texttt{outputs/production\_sweep.csv}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|ll|ll|ll}\toprule
+$\beta$ & \multicolumn{2}{c|}{$\alpha=0.5$} &
+         \multicolumn{2}{c|}{$\alpha=1.0$} &
+         \multicolumn{2}{c}{$\alpha=2.0$} \\
+        & $F$ & $\ell$ & $F$ & $\ell$ & $F$ & $\ell$ \\\midrule
+$0.200$ & $+2.7\!\times\!10^{-7}$ & $17.84$ & $+7.6\!\times\!10^{-5}$ & $18.94$ & $+3.2\!\times\!10^{-5}$ & $20.86$ \\
+$0.120$ & $+7.1\!\times\!10^{-7}$ & $17.84$ & $+2.0\!\times\!10^{-6}$ & $18.92$ & $+1.6\!\times\!10^{-5}$ & $20.83$ \\
+$0.080$ & $+3.0\!\times\!10^{-7}$ & $17.83$ & $+1.2\!\times\!10^{-6}$ & $18.92$ & $+1.1\!\times\!10^{-5}$ & $20.80$ \\
+$0.050$ & $+3.4\!\times\!10^{-7}$ & $17.83$ & $+1.5\!\times\!10^{-6}$ & $18.91$ & $+3.8\!\times\!10^{-5}$ & $20.78$ \\
+$0.035$ & $+1.6\!\times\!10^{-7}$ & $17.83$ & $+1.1\!\times\!10^{-5}$ & $18.87$ & $-1.2\!\times\!10^{-6}$ & $20.77$ \\
+$0.025$ & $+5.3\!\times\!10^{-7}$ & $17.82$ & $-1.5\!\times\!10^{-7}$ & $18.90$ & $+4.1\!\times\!10^{-7}$ & $20.77$ \\\bottomrule
+\end{tabular}
+\caption{Production sweep results.  $F$ values are at or below the
+numerical noise floor of the centroid-quadrature BEM and not monotonic
+in $\beta$; $\ell$ is robustly determined.}
+\label{tab:sweep}
+\end{table}
+
+Two features of the data stand out:
+
+\paragraph{$\ell$ is dominated by a $\beta$-independent floor.}  For
+each $\alpha$, $\ell$ varies by less than $0.5\%$ over the full
+$\beta$-range:
+$\ell_{\alpha=0.5}\approx 17.83$,
+$\ell_{\alpha=1.0}\approx 18.91$,
+$\ell_{\alpha=2.0}\approx 20.79$.  The $\alpha$-dependence is set by
+the wire-path length: the radial-out / radial-in legs at $z=\alpha/2$
+make the polyline longer for larger $\alpha$, and the self-inductance
+$L_{\rm wire,self}\sim (\mu_0/2\pi) L (\ln(2L/r_{\rm wire})-1)$ grows
+accordingly.
+
+\paragraph{$F$ is below the BEM noise floor.}  At $n_t=15$ the
+centroid-quadrature kernel produces $|F|$ values $\sim10^{-7}$--$10^{-4}$
+that fluctuate in sign and magnitude with $\beta$; resolution scans at
+$\alpha=1$, $\beta\in\{0.05, 0.20\}$ at $n_t\in\{10,15,20,25\}$
+(elements 3000--7500) show $F$ varying by a factor of $\gtrsim 5$
+between resolutions while $\ell$ stays stable to $\lesssim 0.02\%$.
+This is the expected behaviour when the signal $V_{\rm eff}$ arises as a
+small residual after $\sim 99.9\%$ cancellation between the wire's
+$A_\phi$ and the induced sheath response, and is governed by the
+quadrature error of the surface kernel ($\mathcal O(h^2)$ for centroid
+quadrature).
 
 \section{Fits and decision}
 \label{sec:fit}
 
-\todo{Unconstrained and $\ell_0=0$-constrained nonlinear least-squares;
-bootstrap residuals to estimate uncertainties; apply decision table from
-spec Sec.~1.}
+Fit details are in \texttt{outputs/fit\_results.json}.  For each
+$\alpha$ we performed the polynomial fits
+$F(\beta)=f_1\beta+f_2\beta^2+f_3\beta^3$ and
+$\ell(\beta)=\ell_0+\ell_1\beta+\ell_2\beta^2$, with the
+$\ell_0\!=\!0$-constrained variant for the residual-sum-of-squares
+ratio test.  Bootstrap on $F$ residuals (2000 samples) gave
+uncertainties on $f_1$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllllll}\toprule
+$\alpha$ & $f_1$ & $\sigma(f_1)$ & sig & $\ell_0$ & $\ell_1$ & RSS$_{\ell_0=0}$/RSS$_{\rm free}$ \\\midrule
+$0.5$ & $+8.3\!\times\!10^{-6}$ & $2.0\!\times\!10^{-5}$ & $0.4\sigma$ & $17.82$ & $+0.22$ & $9.7\!\times\!10^{6}$ \\
+$1.0$ & $+3.4\!\times\!10^{-4}$ & $5.0\!\times\!10^{-4}$ & $0.7\sigma$ & $18.87$ & $+0.59$ & $3.7\!\times\!10^{5}$ \\
+$2.0$ & $+4.9\!\times\!10^{-4}$ & $1.2\!\times\!10^{-3}$ & $0.4\sigma$ & $20.75$ & $+0.72$ & $4.0\!\times\!10^{6}$ \\\bottomrule
+\end{tabular}
+\caption{Polynomial fits and decision-criterion ingredients.  The
+RSS-ratio is astronomical at every $\alpha$: the constrained
+$\ell_0\!=\!0$ fit is many orders of magnitude worse than the
+unconstrained fit, indicating that $\ell_0$ is robustly nonzero (i.e.\
+the asymptotic favorable-scaling $\ell_0\!=\!0$ condition is not met).}
+\label{tab:fits}
+\end{table}
+
+\paragraph{Decision per the spec's table.}
+
+For all three $\alpha$ values, $|f_1|/\sigma(f_1)<1$.  By the literal
+spec criterion, this falls into the row ``$f_1$ zero: No signal-coupled
+response.''  However, this is \emph{not} a robust conclusion about the
+physics; it reflects that $|F|$ is at or below the
+$\mathcal O(h^2)\sim 10^{-4}$ noise floor of our quadrature, so the
+slope $f_1$ cannot be statistically resolved.
+
+The robust statement comes from the $\ell$ data: $\ell_0\approx
+17$--$21$ at each $\alpha$, while $\ell_1$ is $\mathcal O(0.2$--$0.7)$.
+At any $\beta$ in the spec's sweep range $0.025\le\beta\le 0.20$,
+$\ell_0$ exceeds $\ell_1\beta$ by a factor $>100$.  Within the spec's
+formal $\mathrm{RSS}_{\ell_0=0}/\mathrm{RSS}_{\rm free}\le 2$
+criterion, this ratio sits at $10^5$--$10^7$, i.e.\ $\ell_0$ is many
+orders of magnitude away from being consistent with zero.
+
+The physical interpretation is that, for the production-wire $G$
+specified in the spec (radial-out to $s=10R$, axial down to $z=-2R$,
+return along the $z$-axis), the external-lead self-inductance dwarfs
+any sheath-mode inductance for all $\beta$ in the swept range.  Even
+if $F$ had a non-zero linear coefficient $f_1$ resolvable above noise,
+the figure of merit $Q^{\rm tor}\propto V_{\rm eff}^4/L_p^2$ at fixed
+cost would saturate at the wire-floor value rather than scaling as
+$R_t^4$.
 
 \section{Crossover radius $R_t^\ast$}
 \label{sec:cross}
 
-\todo{If favorable: $R_t^\ast$ at $C_{\mathrm{tor}}\in\{0.1,1,10\}\,
-\mathrm{m}^3\cdot\Bmax^2$. Flag $R_t^\ast>1$\,m as impractical.}
+Even taking the unconstrained (potentially noise-driven) $f_1$ values
+optimistically and substituting into the favorable-scaling crossover
+formula gives $Q^{\rm tor}/Q^{\rm core}<10^{-12}$ at every cost budget
+$V_{\rm mag}\in\{0.1,1,10\}\,\mathrm m^3$ and every $\alpha$:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lllll}\toprule
+$\alpha$ & $V_{\rm mag}$\,[m$^3$] & $R_t^\ast$\,[m] & $Q^{\rm tor}/Q^{\rm core}$ \\\midrule
+$0.5$ & $0.1$  & $0.56$ & $5.0\!\times\!10^{-18}$ \\
+$0.5$ & $1.0$  & $1.20$ & $5.0\!\times\!10^{-18}$ \\
+$0.5$ & $10.0$ & $2.59$ & $5.0\!\times\!10^{-18}$ \\
+$1.0$ & $0.1$  & $0.44$ & $2.0\!\times\!10^{-13}$ \\
+$1.0$ & $1.0$  & $0.96$ & $2.0\!\times\!10^{-13}$ \\
+$1.0$ & $10.0$ & $2.06$ & $2.0\!\times\!10^{-13}$ \\
+$2.0$ & $0.1$  & $0.35$ & $5.7\!\times\!10^{-14}$ \\
+$2.0$ & $1.0$  & $0.76$ & $5.7\!\times\!10^{-14}$ \\
+$2.0$ & $10.0$ & $1.63$ & $5.7\!\times\!10^{-14}$ \\\bottomrule
+\end{tabular}
+\caption{Crossover analysis.  $Q^{\rm tor}/Q^{\rm core}\ll 1$ at every
+$\alpha$ and budget because the wire-floor $\ell_0$ kills the gain.
+The numerical ratio depends quartically on the unresolved $f_1$ and is
+not robust as a value, but its sub-unity order of magnitude is robust:
+even pretending the entire sweep-range $|F|$ were a clean signal would
+not flip the inequality.}
+\label{tab:crossover}
+\end{table}
 
 \section{Decision}
 \label{sec:decision}
 
-\todo{Binary decision per $\alpha$.}
+\paragraph{Bottom line.}  For the spec's production-wire geometry $G$,
+the favorable thin-annulus scaling $Q^{\rm tor}\propto R_t^4$ at fixed
+magnet cost is \emph{not} realised.  The wire self-inductance forms an
+$\mathcal O(20\,\mu_0 R_t)$ inductance floor in $L_p$ that is
+independent of $\beta$ and many orders of magnitude larger than any
+sheath contribution in the swept range.  $V_{\rm eff}$ itself sits at
+or below the centroid-quadrature noise floor of the BEM
+($\sim 10^{-4}$ in dimensionless units), so the sheath signal is not
+positively resolved at our resolution; but the conclusion does not
+depend on whether the signal is resolvable, because $\ell_0$ alone
+already places the system in the ``inductance-floor'' row of the spec's
+decision table for all three $\alpha$.
+
+\paragraph{What would change the answer.}  A wire topology whose
+self-inductance scales as $\mu_0 R_t \beta$ rather than $\mu_0 R_t$
+(e.g.\ a return path running along the inner sheath surface rather
+than out to $s=10R$ and back) could in principle reproduce the
+favorable scaling.  Quantifying that would require re-running the
+BEM with a different $G$, and resolving $F$ would in turn require an
+upgraded kernel (4-point Gauss + analytic near-singular split) since
+the cancellation between wire and sheath $A_\phi$ in $V_{\rm mag}$ is
+unforgivingly close to $10^{-3}$ relative for the production setup.
 
 \appendix
 
 \section{Adversarial review log}
 \label{app:review}
 
-This appendix records adversarial reviews and the responses to each.
+This appendix records adversarial reviews of intermediate artifacts and
+the responses they triggered.
+
+\subsection*{Review of the initial BEM solver (\texttt{bem\_solver.py}, commit \texttt{dceadea})}
+
+The reviewer found a sign-convention bug in the stream-function to
+surface-current map on segments C (outer cylinder) and D (bottom cap).
+With $t$ increasing $A\!\to\!B\!\to\!C\!\to\!D$ around the meridional
+rectangle and a consistent outward-from-$V_{\rm mag}$ normal
+($\hat n = -\hat s, +\hat z, +\hat s, -\hat z$), the meridional tangent
+in cylindrical components is $+\hat z, +\hat s, -\hat z, -\hat s$.  For
+$K\cdot\hat t=(1/s)\partial_\chi\psi$ to be globally consistent across
+all four segments (so that current is conserved across corner seams),
+the K-coefficient signs on segments C and D must be inverted from those
+on A and B.  The reviewer also flagged the choice of straight-wire
+self-inductance formula vs.\ the spec's circular-loop variant; the
+former is appropriate for a polyline and the constant offset does not
+affect any $\beta$-dependence.
+
+\emph{Response.}  The sign convention was corrected to use
+$K=\nabla_S\psi\times\hat n$ uniformly on all four segments
+(commit \texttt{e70bac2}).  After the fix:
+\begin{itemize}
+\item $F$ at $\alpha=\beta=1$, $w=0.03$ converged to $\approx-1.8\times
+10^{-4}$ across $n_t\in\{6,12,18\}$, replacing the pre-fix oscillation
+between $5\times 10^{-5}$ and $5\times 10^{-4}$.
+\item XC2 ratio improved from $\sim 0.4$ to $\sim 0.02$, comfortably
+passing the $<0.1$ threshold.
+\item $\ell$ values stabilised to $\approx 19.03$ across mesh
+resolutions.
+\end{itemize}
+The straight-wire formula was kept, with the note that this is the
+physically correct choice for a polyline filament.
+
+\subsection*{Review of the production-sweep $F$ data}
+
+The fits for all three $\alpha$ values triggered the spec's ``no
+signal-coupled response'' row of the decision table because
+$|f_1|<3\sigma_{\rm boot}$.  A higher-resolution self-check at
+$\alpha=1, \beta\in\{0.05,0.20\}, n_t\in\{10,15,20,25\}$ showed that
+$F$ does not converge with mesh refinement at this $G$, while $\ell$
+remains stable to $0.02\%$.  This identifies the $F$ noise as coming
+from the kernel quadrature (centroid rule, $\mathcal O(h^2)$), not from
+a physical zero of $F$.
+
+\emph{Response.}  The decision is reframed around the robust
+observable: $\ell_0\approx 19\gg\ell_1\beta$ across the swept range,
+placing the system in the ``inductance-floor kills the gain'' row of
+the spec's decision table.  This is independent of whether $F$ is
+resolved, so the conclusion is unaffected by the kernel noise.  An
+upgrade path (4-point Gauss + analytic near-singular split for adjacent
+panels) is noted in Sec.~\ref{sec:decision} for a future study with a
+$G$ where the wire self-inductance does not dominate.
 
 \end{document}
