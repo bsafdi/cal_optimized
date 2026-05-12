@@ -279,31 +279,54 @@ the asymptotic favorable-scaling $\ell_0\!=\!0$ condition is not met).}
 \label{tab:fits}
 \end{table}
 
-\paragraph{Decision per the spec's table.}
+\paragraph{Decision per the spec's table (literal reading).}
 
-For all three $\alpha$ values, $|f_1|/\sigma(f_1)<1$.  By the literal
-spec criterion, this falls into the row ``$f_1$ zero: No signal-coupled
-response.''  However, this is \emph{not} a robust conclusion about the
-physics; it reflects that $|F|$ is at or below the
-$\mathcal O(h^2)\sim 10^{-4}$ noise floor of our quadrature, so the
-slope $f_1$ cannot be statistically resolved.
+For all three $\alpha$ values, $|f_1|/\sigma(f_1)<1$.  The spec's
+decision table is exclusive on this axis: $f_1$ statistically zero
+routes \emph{unconditionally} to the third row, ``No signal-coupled
+response. Toroid sheath approach is dead for this $G$; do not
+proceed.''  This is the formal answer.
 
-The robust statement comes from the $\ell$ data: $\ell_0\approx
-17$--$21$ at each $\alpha$, while $\ell_1$ is $\mathcal O(0.2$--$0.7)$.
-At any $\beta$ in the spec's sweep range $0.025\le\beta\le 0.20$,
-$\ell_0$ exceeds $\ell_1\beta$ by a factor $>100$.  Within the spec's
-formal $\mathrm{RSS}_{\ell_0=0}/\mathrm{RSS}_{\rm free}\le 2$
-criterion, this ratio sits at $10^5$--$10^7$, i.e.\ $\ell_0$ is many
-orders of magnitude away from being consistent with zero.
+\paragraph{Why this answer is not quite a verdict on the physics.}
 
-The physical interpretation is that, for the production-wire $G$
-specified in the spec (radial-out to $s=10R$, axial down to $z=-2R$,
-return along the $z$-axis), the external-lead self-inductance dwarfs
-any sheath-mode inductance for all $\beta$ in the swept range.  Even
-if $F$ had a non-zero linear coefficient $f_1$ resolvable above noise,
-the figure of merit $Q^{\rm tor}\propto V_{\rm eff}^4/L_p^2$ at fixed
-cost would saturate at the wire-floor value rather than scaling as
-$R_t^4$.
+The $f_1$-zero outcome here reflects two things: (i) $|F|$ sits at or
+below the centroid-quadrature noise floor of our BEM
+($\mathcal O(h^2)\sim 10^{-4}$, varying by factors of $\sim 5$ between
+$n_t=10$ and $n_t=25$); and (ii) the bootstrap on the polynomial
+residuals is itself unstable -- the bootstrap-mean of $f_1$ disagrees
+with the point estimate by factors $3$--$10$, so the $3\sigma$
+threshold itself is not credible without a better kernel.  In other
+words, our BEM at this kernel order does not resolve $f_1$ either way,
+and the formal ``no signal'' conclusion should be read as
+\emph{inconclusive at this resolution} rather than as a positive
+statement that $f_1=0$.
+
+\paragraph{Hypothetical: what the data would say if $f_1$ were
+resolvable.}
+
+If we set the noise-floor concern aside and treated the unconstrained
+fits at face value, the $\ell$ data would unambiguously route to the
+\emph{second} row of the decision table: $\ell_0\approx 17$--$21$ at
+each $\alpha$ vs.\ $\ell_1\beta\lesssim 0.15$ across the swept range,
+with $\mathrm{RSS}_{\ell_0=0}/\mathrm{RSS}_{\rm free}\sim 10^5$--$10^7$.
+This is row 2, ``Inductance floor kills the gain.''  Note that this is
+a conditional statement: it only applies if and when a future,
+higher-accuracy kernel resolves $f_1>3\sigma$.
+
+\paragraph{Caveat on the ``floor''.}
+
+The large $\ell_0$ is \emph{entirely} the external-lead self-inductance
+of the spec's wire path (out to $s=10R$, down to $z=-2R$, return along
+$s\!=\!0$): XC3 returns $L_{\rm wire,self}=18.903$ of
+$L_p^{\rm total}=19.030$, i.e.\ $99.3\%$.  In physical units, with all
+wire distances scaling as $R_t$, this contributes
+$L_{\rm wire,self}^{\rm SI}\sim\mu_0 R_t\times 19$.  The spec explicitly
+notes that the readout-wire geometry is part of $G$ and ``the answer
+depends on it.''  A different $G$ in which the wire return hugs the
+sheath rather than going out to $s\!=\!10R$ would not have this
+$\ell_0$, and could plausibly route to the first row (favorable
+scaling).  The conclusion below is therefore qualified to the spec's
+chosen $G$.
 
 \section{Crossover radius $R_t^\ast$}
 \label{sec:cross}
@@ -339,28 +362,58 @@ not flip the inequality.}
 \section{Decision}
 \label{sec:decision}
 
-\paragraph{Bottom line.}  For the spec's production-wire geometry $G$,
-the favorable thin-annulus scaling $Q^{\rm tor}\propto R_t^4$ at fixed
-magnet cost is \emph{not} realised.  The wire self-inductance forms an
-$\mathcal O(20\,\mu_0 R_t)$ inductance floor in $L_p$ that is
-independent of $\beta$ and many orders of magnitude larger than any
-sheath contribution in the swept range.  $V_{\rm eff}$ itself sits at
-or below the centroid-quadrature noise floor of the BEM
-($\sim 10^{-4}$ in dimensionless units), so the sheath signal is not
-positively resolved at our resolution; but the conclusion does not
-depend on whether the signal is resolvable, because $\ell_0$ alone
-already places the system in the ``inductance-floor'' row of the spec's
-decision table for all three $\alpha$.
+\paragraph{Formal answer per the spec's decision table.}
 
-\paragraph{What would change the answer.}  A wire topology whose
-self-inductance scales as $\mu_0 R_t \beta$ rather than $\mu_0 R_t$
-(e.g.\ a return path running along the inner sheath surface rather
-than out to $s=10R$ and back) could in principle reproduce the
-favorable scaling.  Quantifying that would require re-running the
-BEM with a different $G$, and resolving $F$ would in turn require an
-upgraded kernel (4-point Gauss + analytic near-singular split) since
-the cancellation between wire and sheath $A_\phi$ in $V_{\rm mag}$ is
-unforgivingly close to $10^{-3}$ relative for the production setup.
+For all three $\alpha\in\{0.5,1.0,2.0\}$: \textbf{row 3, ``No
+signal-coupled response.  Toroid sheath approach is dead for this $G$;
+do not proceed''} -- because $|f_1|<3\sigma_{\rm boot}$ on every fit.
+This is the formal output of the procedure laid out in
+\texttt{cc\_task\_spec.md} Sec.~1.
+
+\paragraph{Honest physical reading.}
+
+The procedure routes to row~3 because $V_{\rm eff}$ sits at the
+$\mathcal O(h^2)\sim 10^{-4}$ noise floor of our centroid-quadrature
+BEM kernel, so $f_1$ is unresolved either way.  The robust observable
+is $\ell(\beta;\alpha)$, which is converged and shows
+$\ell_0\approx 17$--$21$ -- entirely from the external readout wire's
+self-inductance ($99.3\%$ of $L_p$ from XC3).  If a future,
+higher-accuracy kernel resolved $f_1$ above noise, the decision would
+shift to row~2 (``inductance floor'') because $\ell_0$ is many orders
+of magnitude away from being consistent with zero.  Either way, the
+spec's row~1 (favorable thin-annulus scaling) is not the outcome for
+this $G$.
+
+\paragraph{What ``this $G$'' means.}
+
+The spec instructs that the readout-wire path runs out to $s=10R$,
+down to $z=-2R$, and returns along the $z$-axis.  This wire path
+length is $\mathcal O(20 R)$ and dominates $L_p$ at every $\beta$
+in the swept range.  The spec acknowledges (Sec.~``External return
+path (precise)'') that the wire is ``part of $G$ and the answer
+depends on it.''  A wire path whose self-inductance scales as
+$\mu_0 R_t\beta$ rather than $\mu_0 R_t$ (e.g.\ a coaxial return that
+hugs the inner sheath cylinder) would not produce this $\ell_0$
+floor, and a re-run with that $G$ could plausibly fall in row~1.
+\emph{This is the natural next step if the toroid topology is of
+ongoing interest.}
+
+\paragraph{Inconclusive-flags raised (spec Sec.~``What counts as
+inconclusive'').}  Three flags are triggered in our data:
+\begin{itemize}
+\item $F(\beta)$ is non-monotone and has sign changes at every
+$\alpha$, violating flag 1.
+\item $\chi^2/\mathrm{dof}$ for the unconstrained $F$ fit is not
+statistically meaningful with $f_1$ at noise; the polynomial ansatz
+cannot be verified or refuted from these data, partial flag 2.
+\item No condition-number violations ($\max\mathrm{cond}=1.8\times 10^7
+<10^8$), so flag 3 does not fire.
+\end{itemize}
+The raw points and fits are preserved in
+\texttt{outputs/production\_sweep.csv} and
+\texttt{outputs/fit\_results.json}.  We do not paper over the noise:
+the report (\texttt{outputs/report.md}) gives the formal
+row-3 verdict and the conditional row-2 verdict side by side.
 
 \appendix
 
@@ -403,22 +456,42 @@ physically correct choice for a polyline filament.
 
 \subsection*{Review of the production-sweep $F$ data}
 
-The fits for all three $\alpha$ values triggered the spec's ``no
-signal-coupled response'' row of the decision table because
-$|f_1|<3\sigma_{\rm boot}$.  A higher-resolution self-check at
-$\alpha=1, \beta\in\{0.05,0.20\}, n_t\in\{10,15,20,25\}$ showed that
-$F$ does not converge with mesh refinement at this $G$, while $\ell$
-remains stable to $0.02\%$.  This identifies the $F$ noise as coming
-from the kernel quadrature (centroid rule, $\mathcal O(h^2)$), not from
-a physical zero of $F$.
+The fits for all three $\alpha$ values gave $|f_1|<3\sigma_{\rm boot}$.
+A higher-resolution self-check at $\alpha=1$,
+$\beta\in\{0.05,0.20\}$, $n_t\in\{10,15,20,25\}$ showed that $F$ does
+not converge with mesh refinement at this $G$, while $\ell$ remains
+stable to $0.02\%$.  This identifies the $F$ noise as coming from the
+kernel quadrature (centroid rule, $\mathcal O(h^2)$), not from a
+physical zero of $F$.
 
-\emph{Response.}  The decision is reframed around the robust
-observable: $\ell_0\approx 19\gg\ell_1\beta$ across the swept range,
-placing the system in the ``inductance-floor kills the gain'' row of
-the spec's decision table.  This is independent of whether $F$ is
-resolved, so the conclusion is unaffected by the kernel noise.  An
-upgrade path (4-point Gauss + analytic near-singular split for adjacent
-panels) is noted in Sec.~\ref{sec:decision} for a future study with a
-$G$ where the wire self-inductance does not dominate.
+\subsection*{Review of an earlier draft of Sec.~\ref{sec:decision}}
+
+A second adversarial reviewer flagged a logical error in the earlier
+draft: it pivoted from the spec's row~3 (``no signal'') to row~2
+(``inductance floor'') on the strength of $\ell_0$ alone, but the
+spec's decision table is exclusive on the $f_1$ axis -- $f_1$
+statistically zero routes unconditionally to row~3 regardless of
+$\ell_0$.  The reviewer also pointed out that the bootstrap-mean of
+$f_1$ disagrees with the point fit by factors $3$--$10$
+(\texttt{outputs/fit\_results.json}: at $\alpha\!=\!2.0$
+$\hat f_1=4.88\times 10^{-4}$ vs.\ bootstrap mean $5.06\times 10^{-5}$;
+at $\alpha\!=\!0.5$ $\hat f_1=8.26\times 10^{-6}$ vs.\ bootstrap mean
+$1.87\times 10^{-5}$), so the $3\sigma$ threshold itself is unreliable
+until the kernel is upgraded.  Finally, the reviewer noted that
+$\ell_0$ is not a fundamental ``floor'' but the spec's specific
+external-wire path -- $99.3\%$ of $L_p$ at $\alpha=\beta=1$ comes from
+$L_{\rm wire,self}$ (XC3 decomposition).  In physical units the wire
+length scales with $R_t$, so the contribution is
+$\sim\mu_0 R_t\times 19$, part of the $L_p=\mu_0 R_t \ell$
+parameterization but with $\ell$ dominated by a $\beta$-independent
+constant -- exactly the spec's ``ell\_0 not consistent with zero''
+condition.
+
+\emph{Response.}  Sec.~\ref{sec:decision} was rewritten to (i) give
+the formal row-3 verdict cleanly, (ii) state the conditional row-2
+verdict as a hypothetical that requires future kernel work to confirm,
+(iii) document the wire-path caveat prominently, and (iv) list the
+``inconclusive'' flags raised per spec Sec.~``What counts as
+inconclusive.''  \texttt{outputs/report.md} was updated to match.
 
 \end{document}
