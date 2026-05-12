@@ -805,26 +805,22 @@ def assemble_psi_linear_system(mesh: Mesh, wire: WirePath):
     # G3 is (3 n_el)^2 dense memory: for n_el=1500, 4500^2 = 20M entries
     # = 160 MB.  Acceptable.
     # For n_el=4000, that's 1.5 GB.  Watch.
-    n_el3 = 3 * n_el
-    G3 = np.zeros((n_el3, n_el3), dtype=np.float64)
-    # Block-diagonal in coordinate, G in element pair.
+    # A_full[n, m] = sum_j sum_{e, e'} S_j[e, n] G[e, e'] S_j[e', m]
+    # where S_j is the sparse n_el x n_n matrix with values T_eK[e, k, j] at
+    # (e, corners[e, k]).  We exploit block-diagonal structure of G3 to avoid
+    # ever materialising the 3*n_el x 3*n_el matrix.
+    from scipy.sparse import csr_matrix
+    A_full = np.zeros((n_n, n_n), dtype=np.float64)
+    e_idx = np.repeat(np.arange(n_el), 4)
+    col_idx = corners.flatten()
     for j in range(3):
-        G3[j::3, j::3] = G
-    # Sparse S: rows index (e,j), cols index n, vals T_eK[e,k,j] at col corners[e,k].
-    from scipy.sparse import coo_matrix, csr_matrix
-    rows = np.repeat(np.arange(n_el3), 4)
-    cols = corners[np.repeat(np.arange(n_el), 3), :].flatten()
-    vals = np.zeros(rows.size)
-    # rows[e*3+j, k] = (e*3+j); cols = corners[e,k]; vals = T_eK[e,k,j]
-    # ordering: for each (e,j) row, then 4 cols.
-    idx = 0
-    for e in range(n_el):
-        for j in range(3):
-            for k in range(4):
-                vals[idx] = T_eK[e, k, j]
-                idx += 1
-    S = csr_matrix((vals, (rows, cols)), shape=(n_el3, n_n))
-    A_full = np.asarray(S.T @ (G3 @ S))    # (n_n, n_n) -- the energy quadratic form, modulo 1/(8 pi)
+        vals = T_eK[:, :, j].flatten()
+        S_j = csr_matrix((vals, (e_idx, col_idx)), shape=(n_el, n_n))
+        # G @ S_j is dense (n_el, n_n); S_j.T @ (G @ S_j) is dense (n_n, n_n)
+        GSj = G @ S_j           # csr_matrix dense result is np.ndarray
+        if not isinstance(GSj, np.ndarray):
+            GSj = np.asarray(GSj.todense())
+        A_full += np.asarray(S_j.T @ GSj)
 
     # Apply 1/(4 pi) prefactor for delta W = 0 condition (after symm in 1/(8pi)*2).
     # delta W / delta psi_n = (1/(4pi)) sum_m A[n,m] psi_m + c[n] = 0
