@@ -1,4 +1,93 @@
-# Hermetic-sheath toroidal pickup — executive summary (harmonic-mode sheath)
+# Hermetic-sheath toroidal pickup — executive summary
+
+## RETRACTION (2026-05-12)
+
+The previous version of this report claimed the harmonic-mode sheath has an
+"irreducible inductance floor ell₀ ≈ 1.5" producing L_p ∝ β^(-1/3) at fixed
+cost. **That's wrong.** The user pointed out that L_p should go to zero
+(not infinity) as β → 0 at fixed cost (favorable thin-annulus scaling).
+
+The reason my K_har calculation gave ell ≈ const is that K_har =
+c/s · φ̂ is the **axisymmetric toroidal** current mode (current flowing
+around the major axis). The B field from this mode penetrates the **central
+hole** of the toroid and stores magnetic energy that's ~constant in β. That
+energy is real, but it belongs to a different physical mode than the spec's
+"signal mode."
+
+The right mode is the **slit-driven poloidal mode**: current flowing
+*around the meridional cross-section* from one slit edge to the other.
+Study (ii) implements this with Δψ=1 boundary condition. Its inductance
+scales correctly:
+
+| β | ell (α=1, study ii) | ell/β |
+|---|---|---|
+| 0.20 | 0.0253 | 0.127 |
+| 0.12 | 0.0143 | 0.119 |
+| 0.08 | 0.0082 | 0.103 |
+| 0.05 | 0.0037 | 0.073 |
+
+Fit: ell ≈ 0.057 β + 0.35 β² at α=1. **ell → 0 linearly as β → 0**, giving
+L_p ∝ β^(2/3) → 0 at fixed cost. Favorable scaling holds for L_p.
+
+But study (ii) has V_eff = 0 by φ-reflection symmetry (proved in Sec.
+"Wire-removal patch" of notes.tex). So we have favorable L_p scaling
+without a signal.
+
+## Where the calculation actually stands
+
+| Setup | V_eff | L_p scaling at fixed cost | Status |
+|---|---|---|---|
+| Study (i): spec wire, slit BC | small, wire breaks φ-symmetry, sub-noise | L_p ~ wire self-inductance dominates; ell₀ ≈ 19 floor | wire kills favorable scaling |
+| Study (ii): slit BC only | 0 by φ-reflection symmetry | ell ∝ β, favorable L_p ∝ β^(2/3) → 0 ✓ | no signal |
+| Study (iii): K_har only (axisymmetric toroidal) | 0.91 (well-resolved) | ell ≈ const (central-hole energy of wrong mode); L_p ∝ β^(-1/3) → ∞ | **wrong mode** |
+
+**None of my three setups simultaneously delivers (favorable L_p scaling)
++ (non-zero V_eff).** Achieving both requires the slit-driven poloidal
+mode with a φ-asymmetric perturbation whose self-inductance is sub-dominant
+to ell₁ β. The spec's wire fails on the sub-dominant condition (and the
+calculation is sub-noise on V_eff); my K_har provides the wrong perturbation.
+
+## What the corrected analysis looks like
+
+For the **right** mode (study ii poloidal mode + small symmetry-breaking
+perturbation that I haven't implemented):
+
+* V_eff: scales as R³ β at leading order (geometric thin-annulus volume
+factor), with a small coefficient set by the symmetry breaker.
+* L_p ≈ μ₀ R × ell₁ β: favorable.
+* At fixed cost (small β): V_eff → constant, L_p → 0 as β^(2/3).
+* Q^tor ∝ V_eff⁴/L_p² ∝ β^(-4/3) → ∞: favorable scaling, toroid beats Core
+in the limit.
+
+The crossover R_t* would then be finite and meaningful — it would tell us
+*at what R_t* the favorable thin-annulus regime first beats the Core,
+given a real symmetry-breaking perturbation.
+
+## What needs doing next
+
+1. **Resolve V_eff in study (i) above noise** by upgrading the BEM kernel
+   (4-point Gauss + analytic near-singular split for adjacent panels), so
+   the small wire-induced symmetry breaking is visible.
+2. **Or** implement an explicit small-perturbation symmetry breaker
+   (e.g., terminal localization at z = α/2 on one edge but not the
+   reflected location), making the slit-driven mode non-φ-symmetric.
+3. **Either way** the report this gives will have:
+   - L_p ∝ β at small β (study ii's ell₁ controls the slope).
+   - V_eff ∝ β with a coefficient that depends on the perturbation.
+   - Q ratio at fixed cost determined by the (perturbation strength)
+     versus (study ii L_p scale).
+
+The K_har study (iii) is being retained in the appendix as a record of the
+mode misidentification — it is a physically real calculation, but for a
+different current pattern than the spec asks about.
+
+---
+
+(Below: the previous study-iii body, preserved for reference.)
+
+---
+
+
 
 This report covers the wire-removed sheath BEM with the **harmonic mode K_har = c/s × phî** added as the explicit toroidal current source. This is the right physics: my earlier "wire-removal" implementation kept only single-valued ψ and missed the harmonic 1-form on the cut torus, giving V_eff = 0 by symmetry. The user pointed this out (oracle: V_eff ≠ 0). After adding K_har, V_eff is well-resolved and scales linearly with β.
 
