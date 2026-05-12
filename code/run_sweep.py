@@ -11,7 +11,7 @@ import time
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(__file__))
-from bem_solver import run_one
+from bem_solver import run_one, run_one_har
 
 
 ALPHAS = [0.5, 1.0, 2.0]
@@ -26,8 +26,12 @@ def main(out_csv: str, n_t: int = 15, w: float = 0.03,
     for alpha in ALPHAS:
         for beta in BETAS:
             t0 = time.time()
-            res, _ = run_one(alpha=alpha, beta=beta, w=w, n_t_per_seg=n_t,
-                              wire_type=wire_type)
+            if wire_type == "harmonic":
+                res, _ = run_one_har(alpha=alpha, beta=beta, w=w,
+                                     n_t_per_seg=n_t)
+            else:
+                res, _ = run_one(alpha=alpha, beta=beta, w=w, n_t_per_seg=n_t,
+                                 wire_type=wire_type)
             rows.append({
                 "alpha": alpha,
                 "beta": beta,
@@ -60,6 +64,6 @@ if __name__ == "__main__":
     ap.add_argument("--nt", type=int, default=15)
     ap.add_argument("--w", type=float, default=0.03)
     ap.add_argument("--wire", default="production",
-                     choices=["production", "linked", "none"])
+                     choices=["production", "linked", "none", "harmonic"])
     args = ap.parse_args()
     main(args.out, n_t=args.nt, w=args.w, wire_type=args.wire)

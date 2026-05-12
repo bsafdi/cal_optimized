@@ -6,13 +6,16 @@
       "R_t_m": 0.5589041944778033,
       "Veff_core_m3": 0.00477464829275686,
       "Lp_core_H": 1.9015217302647246e-08,
-      "Veff_tor_m3": -9.351082469093785e-19,
-      "Lp_tor_H": 1.2240545189137649e-08,
+      "Veff_tor_m3": 0.030786852668868395,
+      "Lp_tor_H": 1.3425254181197844e-06,
       "Q_core": 898344632.2135234,
-      "Q_tor": 3.189525236903508e-54,
-      "Q_tor_over_Q_core": 3.5504472588036837e-63,
+      "Q_tor": 311527332.846982,
+      "Q_tor_over_Q_core": 0.34677931127542655,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.116e-03 dominates L_p."
+      "F_used": 0.17634095424020915,
+      "ell_used": 1.9115043206994853,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     },
     "V_mag_1.0_m3": {
       "V_mag_m3": 1.0,
@@ -20,13 +23,16 @@
       "R_t_m": 1.2041225849873056,
       "Veff_core_m3": 0.04774648292756861,
       "Lp_core_H": 4.0967043795317744e-08,
-      "Veff_tor_m3": -9.351082469093784e-18,
-      "Lp_tor_H": 2.6371455180381037e-08,
+      "Veff_tor_m3": 0.3078685266886839,
+      "Lp_tor_H": 2.8923833330468227e-06,
       "Q_core": 1935424839244.7502,
-      "Q_tor": 6.871623815117073e-51,
-      "Q_tor_over_Q_core": 3.5504472588036783e-63,
+      "Q_tor": 671165292778.6467,
+      "Q_tor_over_Q_core": 0.3467793112754261,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.116e-03 dominates L_p."
+      "F_used": 0.17634095424020915,
+      "ell_used": 1.9115043206994853,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     },
     "V_mag_10.0_m3": {
       "V_mag_m3": 10.0,
@@ -34,13 +40,16 @@
       "R_t_m": 2.5942034681475166,
       "Veff_core_m3": 0.47746482927568595,
       "Lp_core_H": 8.826082030068797e-08,
-      "Veff_tor_m3": -9.351082469093786e-17,
-      "Lp_tor_H": 5.6815577867233933e-08,
+      "Veff_tor_m3": 3.0786852668868394,
+      "Lp_tor_H": 6.2314509895861175e-06,
       "Q_core": 4169746413618267.0,
-      "Q_tor": 1.4804464724137473e-47,
-      "Q_tor_over_Q_core": 3.5504472588036853e-63,
+      "Q_tor": 1445981789507723.2,
+      "Q_tor_over_Q_core": 0.3467793112754267,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.116e-03 dominates L_p."
+      "F_used": 0.17634095424020915,
+      "ell_used": 1.9115043206994853,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     }
   },
   "1.0": {
@@ -50,13 +59,16 @@
       "R_t_m": 0.44360255313175206,
       "Veff_core_m3": 0.00477464829275686,
       "Lp_core_H": 1.9015217302647246e-08,
-      "Veff_tor_m3": -2.68748311571268e-17,
-      "Lp_tor_H": 1.8566799123549174e-08,
+      "Veff_tor_m3": 0.02270540944693193,
+      "Lp_tor_H": 7.7686201386568e-07,
       "Q_core": 898344632.2135234,
-      "Q_tor": 9.457773686288517e-49,
-      "Q_tor_over_Q_core": 1.0528001556579171e-57,
+      "Q_tor": 275238762.46127915,
+      "Q_tor_over_Q_core": 0.3063843792143447,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -4.507e-03 dominates L_p."
+      "F_used": 0.26010411725751775,
+      "ell_used": 1.3936059287098537,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     },
     "V_mag_1.0_m3": {
       "V_mag_m3": 1.0,
@@ -64,13 +76,16 @@
       "R_t_m": 0.9557127290537584,
       "Veff_core_m3": 0.04774648292756861,
       "Lp_core_H": 4.0967043795317744e-08,
-      "Veff_tor_m3": -2.6874831157126793e-16,
-      "Lp_tor_H": 4.000095611462791e-08,
+      "Veff_tor_m3": 0.22705409446931918,
+      "Lp_tor_H": 1.673698472040251e-06,
       "Q_core": 1935424839244.7502,
-      "Q_tor": 2.037615572021069e-45,
-      "Q_tor_over_Q_core": 1.0528001556579154e-57,
+      "Q_tor": 592983937888.0245,
+      "Q_tor_over_Q_core": 0.3063843792143441,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -4.507e-03 dominates L_p."
+      "F_used": 0.26010411725751775,
+      "ell_used": 1.3936059287098537,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     },
     "V_mag_10.0_m3": {
       "V_mag_m3": 10.0,
@@ -78,13 +93,16 @@
       "R_t_m": 2.0590206571784595,
       "Veff_core_m3": 0.47746482927568595,
       "Lp_core_H": 8.826082030068797e-08,
-      "Veff_tor_m3": -2.6874831157126785e-15,
-      "Lp_tor_H": 8.617944748779737e-08,
+      "Veff_tor_m3": 2.2705409446931917,
+      "Lp_tor_H": 3.6058740488168756e-06,
       "Q_core": 4169746413618267.0,
-      "Q_tor": 4.389909673311347e-42,
-      "Q_tor_over_Q_core": 1.0528001556579156e-57,
+      "Q_tor": 1277545166417671.2,
+      "Q_tor_over_Q_core": 0.3063843792143443,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -4.507e-03 dominates L_p."
+      "F_used": 0.26010411725751775,
+      "ell_used": 1.3936059287098537,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: inductance-floor"
     }
   },
   "2.0": {
@@ -94,13 +112,16 @@
       "R_t_m": 0.35208757974856114,
       "Veff_core_m3": 0.00477464829275686,
       "Lp_core_H": 1.9015217302647246e-08,
-      "Veff_tor_m3": -5.774999529657583e-16,
-      "Lp_tor_H": 3.5248557993647264e-08,
+      "Veff_tor_m3": 0.014442274369033854,
+      "Lp_tor_H": 3.886893094148578e-07,
       "Q_core": 898344632.2135234,
-      "Q_tor": 5.595064795833915e-44,
-      "Q_tor_over_Q_core": 6.228194164245922e-53,
+      "Q_tor": 179977075.6028632,
+      "Q_tor_over_Q_core": 0.2003430188694947,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.728e-02 dominates L_p."
+      "F_used": 0.330889873158048,
+      "ell_used": 0.8785005276887021,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: no-signal-coupled-response"
     },
     "V_mag_1.0_m3": {
       "V_mag_m3": 1.0,
@@ -108,13 +129,16 @@
       "R_t_m": 0.7585496957396675,
       "Veff_core_m3": 0.04774648292756861,
       "Lp_core_H": 4.0967043795317744e-08,
-      "Veff_tor_m3": -5.774999529657583e-15,
-      "Lp_tor_H": 7.594071611511433e-08,
+      "Veff_tor_m3": 0.14442274369033853,
+      "Lp_tor_H": 8.374057318479061e-07,
       "Q_core": 1935424839244.7502,
-      "Q_tor": 1.2054201689120744e-40,
-      "Q_tor_over_Q_core": 6.228194164245916e-53,
+      "Q_tor": 387748855089.2993,
+      "Q_tor_over_Q_core": 0.2003430188694945,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.728e-02 dominates L_p."
+      "F_used": 0.330889873158048,
+      "ell_used": 0.8785005276887021,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: no-signal-coupled-response"
     },
     "V_mag_10.0_m3": {
       "V_mag_m3": 10.0,
@@ -122,13 +146,16 @@
       "R_t_m": 1.63424577861467,
       "Veff_core_m3": 0.47746482927568595,
       "Lp_core_H": 8.826082030068797e-08,
-      "Veff_tor_m3": -5.77499952965758e-14,
-      "Lp_tor_H": 1.636093131842656e-07,
+      "Veff_tor_m3": 1.444227436903385,
+      "Lp_tor_H": 1.8041359583246663e-06,
       "Q_core": 4169746413618267.0,
-      "Q_tor": 2.5969990279682618e-37,
-      "Q_tor_over_Q_core": 6.228194164245913e-53,
+      "Q_tor": 835379584424531.9,
+      "Q_tor_over_Q_core": 0.2003430188694946,
       "favorable": false,
-      "note": "Optimistic: favorable scaling did not hold; ell_0 = -1.728e-02 dominates L_p."
+      "F_used": 0.330889873158048,
+      "ell_used": 0.8785005276887021,
+      "beta_eval": 0.2,
+      "note": "Evaluated at beta=0.20 data point; decision: no-signal-coupled-response"
     }
   }
 }

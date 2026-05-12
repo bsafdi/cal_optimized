@@ -153,7 +153,8 @@ def decide(alpha, fit_F_full, fit_ell_full, fit_ell_constr, boot):
                 decision=decision, reason=reason)
 
 
-def crossover_Rt(alpha, f1, ell1, V_mag_m3=1.0, B_max=5.0, mu_0_si=4*np.pi*1e-7):
+def crossover_Rt(alpha, F_at_beta, ell_at_beta, beta_eval=0.2,
+                  V_mag_m3=1.0, B_max=5.0, mu_0_si=4*np.pi*1e-7):
     """Compute the crossover R_t* at which Q^tor = Q^core for a given
     cost budget V_mag_m3 (m^3) and B_max (T).
 
@@ -190,7 +191,6 @@ def crossover_Rt(alpha, f1, ell1, V_mag_m3=1.0, B_max=5.0, mu_0_si=4*np.pi*1e-7)
     report the linear-in-beta result at beta=1, recognising that
     higher-order corrections may modify by ~factor of 2.
     """
-    beta_eval = 0.2
     ln_r = 0.3
     # SI: C is in J = B^2 V (with mu_0 absorbed).  We work with cost
     # C = mu_0 * (B^2/2 mu_0) * V = (B^2 V) /2 ... or just  C = int B^2 dV.
@@ -212,10 +212,10 @@ def crossover_Rt(alpha, f1, ell1, V_mag_m3=1.0, B_max=5.0, mu_0_si=4*np.pi*1e-7)
     #   Q^tor = B_max^4 V_eff^4 / L_p^2
     # Cost constraint: C_tor = 2 pi B_max^2 R_t^3 alpha ln(1+beta_eval) = C (matched)
     R_t_m = (C / (2 * np.pi * B_max ** 2 * alpha * np.log(1 + beta_eval))) ** (1.0 / 3.0)
-    V_eff_tor = R_t_m ** 3 * f1 * beta_eval
-    Lp_tor = mu_0_si * R_t_m * ell1 * beta_eval
+    V_eff_tor = R_t_m ** 3 * F_at_beta
+    Lp_tor = mu_0_si * R_t_m * ell_at_beta
     if Lp_tor == 0:
-        return dict(error="ell_1 = 0; Q^tor undefined")
+        return dict(error="ell at beta_eval = 0; Q^tor undefined")
     Q_tor_num = (B_max ** 4) * (V_eff_tor ** 4) / (Lp_tor ** 2)
     ratio = Q_tor_num / Q_core_num
     return dict(
@@ -316,29 +316,41 @@ def main(sweep_csv: str, out_dir: str = "outputs",
             decision=decision,
         )
 
-        # Crossover only if favorable
-        if decision["decision"] == "favorable":
-            cs = {}
-            for V in [0.1, 1.0, 10.0]:
-                cs[f"V_mag_{V}_m3"] = crossover_Rt(alpha,
-                                                  fitF["f1"],
-                                                  fitE_free["ell_1"],
-                                                  V_mag_m3=V)
-            crossovers[str(alpha)] = cs
-        else:
-            # Still compute optimistic crossover using f_1 and ell_1 from
-            # the unconstrained fit to give a sense of scale.
-            cs = {}
-            for V in [0.1, 1.0, 10.0]:
-                cs[f"V_mag_{V}_m3"] = crossover_Rt(alpha,
-                                                  fitF["f1"],
-                                                  fitE_free["ell_1"],
-                                                  V_mag_m3=V)
+        # Crossover at beta_eval = 0.2 using the FULL fitted F(beta) and
+        # ell(beta) (not just the linear coefficients).  This correctly
+        # treats the case ell_0 != 0 (inductance-floor regime), where the
+        # leading L_p contribution is the beta-independent ell_0.
+        cs = {}
+        beta_eval = 0.2
+        F_eval = (fitF["f1"] * beta_eval
+                  + fitF["f2"] * beta_eval**2
+                  + fitF["f3"] * beta_eval**3)
+        ell_eval = (fitE_free["ell_0"]
+                    + fitE_free["ell_1"] * beta_eval
+                    + fitE_free["ell_2"] * beta_eval**2)
+        # Use directly-observed F and ell at beta=0.2 if available, as a
+        # cross-check on the fit.
+        F_data = None
+        ell_data = None
+        for k, b_val in enumerate(bs):
+            if abs(b_val - beta_eval) < 1e-6:
+                F_data = Fs[k]
+                ell_data = es[k]
+        F_use = F_data if F_data is not None else F_eval
+        ell_use = ell_data if ell_data is not None else ell_eval
+        for V in [0.1, 1.0, 10.0]:
+            cs[f"V_mag_{V}_m3"] = crossover_Rt(alpha,
+                                              F_use, ell_use,
+                                              beta_eval=beta_eval,
+                                              V_mag_m3=V)
+            cs[f"V_mag_{V}_m3"]["F_used"] = float(F_use)
+            cs[f"V_mag_{V}_m3"]["ell_used"] = float(ell_use)
+            cs[f"V_mag_{V}_m3"]["beta_eval"] = beta_eval
+            if decision["decision"] != "favorable":
                 cs[f"V_mag_{V}_m3"]["note"] = (
-                    "Optimistic: favorable scaling did not hold; "
-                    "ell_0 = %.3e dominates L_p." %
-                    fitE_free["ell_0"])
-            crossovers[str(alpha)] = cs
+                    "Evaluated at beta=%.2f data point; "
+                    "decision: %s" % (beta_eval, decision["decision"]))
+        crossovers[str(alpha)] = cs
 
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "fit_results.json"), "w") as f:
